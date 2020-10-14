@@ -3,4 +3,4 @@ project(OOProject)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(OOProject main.cpp)
+add_executable(OOProject main.cpp include/Participant.h src/Participant.cpp)

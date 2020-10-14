@@ -1,6 +1,10 @@
+// include
 #include <iostream>
+#include "include/Participant.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+
+    Participant p("anabele");
+    std::cout << p.getUsername();
     return 0;
 }
