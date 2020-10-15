@@ -1,10 +1,16 @@
 // include
 #include <iostream>
-#include "include/Participant.h"
+#include "include/User.h"
 
 int main() {
 
-    Participant p("anabele");
-    std::cout << p.getUsername();
+    User u1("MaximTiberiu", "test123", "tiberiu@test.ro");
+    std::cout << u1.getUsername() << "\n";
+    std::cout << u1.getPassword() << "\n";
+    std::cout << u1.getEmail() << "\n";
+
+    u1.setUsername("MaximTiberiu1");
+    std::cout << u1.getUsername() << "\n";
+
     return 0;
 }

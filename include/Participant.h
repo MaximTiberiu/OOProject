@@ -4,12 +4,22 @@
 #include <string>
 
 
-class Participant{
-private:
+class Participant {
+protected:
     std::string username;
+    std::string password;
+    std::string email;
 
 public:
-    Participant(std::string username);
-    ~Participant();
+    // getters
+
     std::string getUsername();
+    std::string getPassword();
+    std::string getEmail();
+
+    // setters
+
+    void setUsername(const std::string&);
+    void setPassword(const std::string&);
+    void setEmail(const std::string&);
 };
