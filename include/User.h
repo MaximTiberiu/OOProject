@@ -10,6 +10,9 @@ private:
     tm *ltm;
 
     std::string grade;
+    
+    void fsetGrade();
+
 public:
     User(const std::string&, const std::string&, const std::string&);
     ~User();
