@@ -93,7 +93,7 @@ void Interface::signupAdmin(const std::string& fileName) {
     admins.insert(itA, temp);
     ++itA;
 
-    out << username << " " << email << pass1 << "\n"; // de supraincarcat operator
+    out << temp;
 
     out.close();
 }
@@ -153,7 +153,7 @@ void Interface::signupUser(const std::string& fileName) {
     users.insert(itU, temp);
     ++itU;
 
-    out << name << username << " " << email << pass1 << "\n"; // de supraincarcat operator
+    out << temp;
 
     out.close();
 }

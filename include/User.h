@@ -3,6 +3,7 @@
 // include
 #include "Participant.h"
 #include <ctime>
+#include <iostream>
 
 class User : public Participant {
 private:
@@ -18,6 +19,8 @@ private:
 public:
     User(const std::string&, const std::string&, const std::string&, const std::string&);
     ~User();
+
+    friend std::ostream &operator<< (std::ostream &, const User &);
 
     // getters
 

@@ -28,3 +28,7 @@ void User::set_dateTime(tm *newltm) {
 void User::setGrade(const std::string& newGrade) {
     this->grade = newGrade;
 }
+
+std::ostream &operator<< (std::ostream &out, const User &user) {
+    out << user.username << ";" << user.password << ";" << user.email << ";" << user.name;
+}
