@@ -29,8 +29,8 @@ private:
 
     // login methods
     void login();
-    void loginUser(const std::string user, const std::string pass);
-    void loginAdmin(const std::string user, const std::string pass);
+    bool loginUser(const std::string&, const std::string&, const std::string&);
+    bool loginAdmin(const std::string&, const std::string&, const std::string&);
 
     // validation methods
     static bool checkPass(const std::string&, const std::string&);

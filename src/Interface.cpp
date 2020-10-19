@@ -21,10 +21,28 @@ void Interface::login() {
 
     std::cin >> opt;
 
-    /*if(opt == 1)
-        loginUser(userFile);
-    else
-        loginAdmin(adminFile);*/
+    if(opt == 1) {
+        std::string user, pass;
+        std::cout << "Username: ";
+        std::getline(std::cin, user);
+
+        std::cout << "Password: ";
+        std::getline(std::cin, pass);
+
+        if (loginUser(user, pass, userFile))
+            std::cout << "Bine ai venit, " << user << "!\n";
+    }
+    else {
+        std::string user, pass;
+        std::cout << "Username: ";
+        std::getline(std::cin, user);
+
+        std::cout << "Password: ";
+        std::getline(std::cin, pass);
+
+        if (loginAdmin(user, pass, adminFile))
+            std::cout << "Bine ai venit, admin!\n";
+    }
 }
 
 void Interface::signup() {
@@ -171,4 +189,36 @@ bool Interface::checkUsername(const std::string& username) {
 
 bool Interface::checkEmail(const std::string& email) {
     return email.find("@") != std::string::npos;
+}
+
+bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
+    std::ifstream in(fileName);
+    std::string username, password, name, email;
+    // de implementat logale cu supraincarcare>>
+    while(in) {
+        std::getline(in, username, ';');
+        std::getline(in, password, ';');
+        std::getline(in, email);
+
+        if((username == userOrEmail || email == userOrEmail) && password == pass) return true;
+    }
+    return false;
+}
+
+bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
+    std::ifstream in(fileName);
+    std::string username, password, email, name;
+    // de implementat logale cu supraincarcare>>
+    while(in) {
+        std::getline(in, username, ';');
+        std::getline(in, password, ';');
+        std::getline(in, email, ';');
+        std::getline(in, name);
+        if((username == userOrEmail || email == userOrEmail) && password == pass)
+        {
+            //std::cout << "buna, " << name << "!";
+            return true;
+        }
+    }
+    return false;
 }
