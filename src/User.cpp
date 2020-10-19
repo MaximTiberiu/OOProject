@@ -1,7 +1,8 @@
 // include
 #include "../include/User.h"
 
-User::User(const std::string& username, const std::string& password, const std::string& email) {
+User::User(const std::string& name, const std::string& username, const std::string& password, const std::string& email) {
+    this->name = name;
     this->username = username;
     this->password = password;
     this->email = email;

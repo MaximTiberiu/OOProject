@@ -16,6 +16,7 @@ int main() {
     Interface i;
     //i.startApp();
     i.signupAdmin("../appFiles/admins.txt");
+    i.signupAdmin("../appFiles/admins.txt");
 
     return 0;
 }

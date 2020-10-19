@@ -6,6 +6,8 @@
 
 class User : public Participant {
 private:
+    std::string name;
+
     time_t dateTime;
     tm *ltm;
 
@@ -14,7 +16,7 @@ private:
     void fsetGrade();
 
 public:
-    User(const std::string&, const std::string&, const std::string&);
+    User(const std::string&, const std::string&, const std::string&, const std::string&);
     ~User();
 
     // getters
