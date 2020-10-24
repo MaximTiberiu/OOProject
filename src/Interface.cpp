@@ -24,6 +24,8 @@ void Interface::login() {
     if(opt == 1) {
         std::string user, pass;
         std::cout << "Username: ";
+        std::cin.ignore(100, '\n');
+
         std::getline(std::cin, user);
 
         std::cout << "Password: ";
@@ -35,6 +37,7 @@ void Interface::login() {
     else {
         std::string user, pass;
         std::cout << "Username: ";
+        std::cin.ignore(100, '\n');
         std::getline(std::cin, user);
 
         std::cout << "Password: ";
@@ -67,6 +70,8 @@ void Interface::signupAdmin(const std::string& fileName) {
     bool cond;
 
     std::cout << "Username: ";
+    std::cin.ignore(100, '\n');
+
     std::getline(std::cin, username);
     cond = checkUsername(username);
 
@@ -121,9 +126,12 @@ void Interface::signupUser(const std::string& fileName) {
     out.open(fileName, std::ios::app);
 
     std::string username, pass1, pass2, email, name;
+    std::string dummy;
     bool cond;
 
     std::cout << "Name: ";
+    std::cin.ignore(100, '\n');
+
     std::getline(std::cin, name);
 
     std::cout << "Username: ";

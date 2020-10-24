@@ -7,6 +7,12 @@ Admin::Admin(const std::string& username, const std::string& password, const std
     this->email = email;
 }
 
+Admin::Admin(const Admin &ad) {
+    username = ad.username;
+    email = ad.email;
+    password = ad.password;
+}
+
 Admin::~Admin() = default;
 
 std::ostream& operator<<(std::ostream &out, const Admin& admin) {

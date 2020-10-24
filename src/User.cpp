@@ -11,6 +11,16 @@ User::User(const std::string& name, const std::string& username, const std::stri
     ltm = localtime(&dateTime);
 }
 
+User::User(const User &us) {
+    name = us.name;
+    username = us.username;
+    email = us.email;
+    password = us.password;
+    ltm = us.ltm;
+    grade = us.grade;
+    dateTime = us.dateTime;
+}
+
 User::~User() = default;
 
 tm User::get_dateTime() {
