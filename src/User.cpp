@@ -7,11 +7,11 @@ User::User(const std::string& name, const std::string& username, const std::stri
     this->password = password;
     this->email = email;
 
-    dateTime = time(0); // current date&time
+    dateTime = time(nullptr); // current date&time
     ltm = localtime(&dateTime);
 }
 
-User::User(const User &us) {
+User::User(const User &us)  : Participant(us) {
     name = us.name;
     username = us.username;
     email = us.email;
