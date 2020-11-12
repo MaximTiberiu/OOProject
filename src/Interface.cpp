@@ -1,5 +1,13 @@
 #include "../include/Interface.h"
 
+void Interface::clear_screen() {
+#ifdef  _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
 void Interface::startApp() {
     std::cout << "\t\t\t\tReddit++\n";
 
@@ -13,8 +21,10 @@ void Interface::startApp() {
         signup();
 }
 
+
+
 void Interface::login() {
-    system("cls");
+    clear_screen();
     std::cout << "\t\t\t\tReddit++\n";
 
     std::cout << "USER - 1\nADMIN - 2\n\n";
@@ -49,7 +59,7 @@ void Interface::login() {
 }
 
 void Interface::signup() {
-    system("cls");
+    clear_screen();
     std::cout << "\t\t\t\tReddit++\n";
 
     std::cout << "USER - 1\nADMIN - 2\n\n";
@@ -63,6 +73,7 @@ void Interface::signup() {
 }
 
 void Interface::signupAdmin(const std::string& fileName) {
+    auto itA = admins.begin();
     std::ofstream out;
     out.open(fileName, std::ios::app);
 
@@ -122,6 +133,8 @@ void Interface::signupAdmin(const std::string& fileName) {
 }
 
 void Interface::signupUser(const std::string& fileName) {
+    auto itU = users.begin();
+
     std::ofstream out;
     out.open(fileName, std::ios::app);
 
@@ -196,7 +209,7 @@ bool Interface::checkUsername(const std::string& username) {
 }
 
 bool Interface::checkEmail(const std::string& email) {
-    return email.find("@") != std::string::npos;
+    return email.find('@') != std::string::npos;
 }
 
 bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {

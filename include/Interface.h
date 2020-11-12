@@ -3,7 +3,7 @@
 // include
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <list>
 
 #include "Admin.h"
@@ -12,15 +12,13 @@
 class Interface {
 private:
     std::list<Admin> admins;
-    std::list<Admin>::iterator itA = admins.begin();
-
     std::list<User> users;
-    std::list<User>::iterator itU = users.begin();
 
     unsigned short opt;
 
     const std::string adminFile = "../appFiles/admins.txt";
     const std::string userFile = "../appFiles/users.txt";
+    static void clear_screen();
 
     // signup methods
     void signup();

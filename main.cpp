@@ -6,6 +6,6 @@ int main() {
     Interface i;
     i.startApp();
 
-    system("pause");
+    std::cin.get();
     return 0;
 }
