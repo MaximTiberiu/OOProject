@@ -2,52 +2,10 @@
 #include "../rlutil/rlutil.h"
 #include <iostream>
 
-void Interface::openFile(std::ifstream& fin, const std::string& fileName) {
-    fin.open(fileName);
-}
-
-void Interface::openFile(std::ofstream& fout, const std::string& fileName) {
-    fout.open(fileName);
-}
-
-void Interface::closeFile(std::ifstream& fin) {
-    fin.close();
-}
-
-void Interface::closeFile(std::ofstream& fout) {
-    fout.close();
-}
-
-/*void Interface::startAppTEST(std::ifstream& fin) {
-    rlutil::setColor(rlutil::YELLOW);
-    std::cout << "-------------------------------------------------\n";
-    std::cout << "                    Reddit++\n";
-    std::cout << "-------------------------------------------------\n\n";
-
-    std::cout << "Please select an option from the menu below: \n";
-    std::cout << "1. Login\n";
-    std::cout << "2. Create a New Account\n";
-    std::cout << "3. Quit\n\n";
-
-    std::cout << "Please select your choice: ";
-    fin >> option;
-
-    switch(option) {
-        case 1: {
-            login();
-            break;
-        }
-        case 2: {
-            signup();
-            break;
-        }
-        case 3: {
-            return;
-        }
-    }
-}*/
+#define waitkey rlutil::anykey("Press any key to continue...\n")
 
 void Interface::startApp() {
+    rlutil::cls();
     rlutil::setColor(rlutil::YELLOW);
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Reddit++\n";
@@ -72,12 +30,11 @@ void Interface::startApp() {
             break;
         }
         case 3: {
-
+            rlutil::setColor(rlutil::RED);
+            waitkey;
         }
     }
 }
-
-
 
 void Interface::login() {
     rlutil::cls();
@@ -129,15 +86,16 @@ void Interface::login() {
             break;
         }
         case 3: {
-            int x;
+            // login->
             return;
         }
         case 4: {
-            int y;
+            startApp();
             return;
         }
         case 5: {
-            return;
+            rlutil::setColor(rlutil::RED);
+            waitkey;
         }
     }
 }
