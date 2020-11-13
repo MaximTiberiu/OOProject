@@ -11,14 +11,13 @@ protected:
     std::string email;
 
 public:
-    // getters
 
+    // getters
     std::string getUsername();
     std::string getPassword();
     std::string getEmail();
 
     // setters
-
     void setUsername(const std::string&);
     void setPassword(const std::string&);
     void setEmail(const std::string&);

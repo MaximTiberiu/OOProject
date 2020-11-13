@@ -1,8 +1,7 @@
 // include
 #include "../include/User.h"
 
-User::User(const std::string& name, const std::string& username, const std::string& password, const std::string& email) {
-    this->name = name;
+User::User(const std::string& username, const std::string& password, const std::string& email) {
     this->username = username;
     this->password = password;
     this->email = email;
@@ -12,7 +11,6 @@ User::User(const std::string& name, const std::string& username, const std::stri
 }
 
 User::User(const User &us)  : Participant(us) {
-    name = us.name;
     username = us.username;
     email = us.email;
     password = us.password;
@@ -40,6 +38,6 @@ void User::setGrade(const std::string& newGrade) {
 }
 
 std::ostream &operator<< (std::ostream &out, const User &user) {
-    out << user.username << ";" << user.password << ";" << user.email << ";" << user.name;
+    out << user.username << " " << user.password << " " << user.email << "\n";
     return out;
 }

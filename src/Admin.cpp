@@ -16,6 +16,6 @@ Admin::Admin(const Admin &ad) {
 Admin::~Admin() = default;
 
 std::ostream& operator<<(std::ostream &out, const Admin& admin) {
-    out << admin.username << ";" << admin.password << ";" << admin.email;
+    out << admin.username << " " << admin.password << " " << admin.email << "\n";
     return out;
 }
