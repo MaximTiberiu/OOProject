@@ -25,7 +25,7 @@ jobs:
     - name: valgrind
       run:
         valgrind --leak-check=full --show-leak-kinds=all
-                 --track-origins=yes --error-exitcode=1 cat ../testFiles/testFile1.txt | ./main
+                 --track-origins=yes --error-exitcode=1 cat ./testFiles/testFile1.txt | ./main
     - name: coverage
       run: |
         gcov *.cpp
