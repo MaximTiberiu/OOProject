@@ -32,6 +32,13 @@ void Interface::startApp() {
         case 3: {
             rlutil::setColor(rlutil::RED);
             waitkey;
+            break;
+        }
+        default: {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Incorrect option!\n";
+            startApp();
+            break;
         }
     }
 }
@@ -68,7 +75,6 @@ void Interface::login() {
 
             if (loginUser(user, pass, userFile))
                 std::cout << "Bine ai venit, " << user << "!\n";
-
             break;
         }
         case 2: {
@@ -96,22 +102,60 @@ void Interface::login() {
         case 5: {
             rlutil::setColor(rlutil::RED);
             waitkey;
+            break;
+        }
+        default: {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Incorrect option!\n";
+            login();
+            break;
         }
     }
 }
 
 void Interface::signup() {
     rlutil::cls();
-    std::cout << "\t\t\t\tReddit++\n";
+    rlutil::setColor(rlutil::YELLOW);
 
-    std::cout << "USER - 1\nADMIN - 2\n\n";
+    std::cout << "-------------------------------------------------\n";
+    std::cout << "                    Signup\n";
+    std::cout << "-------------------------------------------------\n\n";
 
+    std::cout << "Please select an option from the menu below: \n";
+    std::cout << "1. Signup as User\n";
+    std::cout << "2. Signup as Admin\n";
+    std::cout << "3. Return to Main Menu\n";
+    std::cout << "4. Quit\n\n";
+
+    std::cout << "Please select your choice: ";
+    rlutil::setColor(rlutil::CYAN);
     std::cin >> option;
 
-    if(option == 1)
-        signupUser(userFile);
-    else
-        signupAdmin(adminFile);
+    switch(option) {
+        case 1: {
+            signupUser(userFile);
+            break;
+        }
+        case 2: {
+            signupAdmin(adminFile);
+            break;
+        }
+        case 3: {
+            startApp();
+            return;
+        }
+        case 4: {
+            rlutil::setColor(rlutil::RED);
+            waitkey;
+            break;
+        }
+        default: {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Incorrect option!\n";
+            signup();
+            break;
+        }
+    }
 }
 
 void Interface::signupAdmin(const std::string& fileName) {
