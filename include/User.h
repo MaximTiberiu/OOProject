@@ -7,7 +7,6 @@
 
 class User : public Participant {
 private:
-    std::string name;
 
     time_t dateTime;
     tm *ltm;
@@ -17,19 +16,17 @@ private:
     void fsetGrade();
 
 public:
-    User(const std::string&, const std::string&, const std::string&, const std::string&);
+    User(const std::string&, const std::string&, const std::string&);
     User(const User &);
     ~User();
 
     friend std::ostream &operator<< (std::ostream &, const User &);
 
     // getters
-
     tm get_dateTime();
     std::string getGrade();
 
     // setters
-
     void set_dateTime(tm*);
     void setGrade(const std::string&);
 };

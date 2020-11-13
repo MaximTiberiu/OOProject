@@ -1,11 +1,20 @@
 #include "../include/Interface.h"
 #include "../rlutil/rlutil.h"
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #define waitkey rlutil::anykey("Press any key to continue...\n")
+//#define time 3000
 
+
+/* Function that opens the app. */
 void Interface::startApp() {
-    rlutil::cls();
+    // loading data
+    loadUsersData(userFile, users);
+    loadAdminsData(adminFile, admins);
+
+    //rlutil::cls();
     rlutil::setColor(rlutil::YELLOW);
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Reddit++\n";
@@ -37,12 +46,218 @@ void Interface::startApp() {
         default: {
             rlutil::setColor(rlutil::RED);
             std::cout << "Incorrect option!\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
             startApp();
-            break;
+            return;
         }
     }
 }
 
+/** SIGNUP METHODS **/
+
+/* Function that shows the signup form */
+void Interface::signup() {
+    rlutil::cls();
+    rlutil::setColor(rlutil::YELLOW);
+
+    std::cout << "-------------------------------------------------\n";
+    std::cout << "                    Signup\n";
+    std::cout << "-------------------------------------------------\n\n";
+
+    std::cout << "Please select an option from the menu below: \n";
+    std::cout << "1. Signup as User\n";
+    std::cout << "2. Signup as Admin\n";
+    std::cout << "3. Return to Main Menu\n";
+    std::cout << "4. Quit\n\n";
+
+    std::cout << "Please select your choice: ";
+    rlutil::setColor(rlutil::CYAN);
+    std::cin >> option;
+
+    switch(option) {
+        case 1: {
+            signupUser(userFile);
+            break;
+        }
+        case 2: {
+            signupAdmin(adminFile);
+            break;
+        }
+        case 3: {
+            startApp();
+            return;
+        }
+        case 4: {
+            rlutil::setColor(rlutil::RED);
+            waitkey;
+            break;
+        }
+        default: {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Incorrect option!\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+
+            signup();
+            return;
+        }
+    }
+}
+
+/* Function that  creates a new user account in the app */
+void Interface::signupUser(const std::string& fileName) {
+    std::fstream out;
+    out.open(fileName, std::ios::app);
+
+    std::string username, pass1, pass2, email;
+    bool cond;
+
+    rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Username: ";
+    rlutil::setColor(rlutil::CYAN);
+        std::cin.ignore(100, '\n');
+        std::getline(std::cin, username);
+    cond = checkUsername(username);
+
+    while(!cond) {
+        rlutil::setColor(rlutil::RED);
+        std::cout << "White-spaces are not allowed in username! Please try again!\n";
+
+        rlutil::setColor(rlutil::YELLOW);
+            std::cout << "Username: ";
+        rlutil::setColor(rlutil::CYAN);
+            std::getline(std::cin, username);
+        cond = checkUsername(username);
+    }
+
+    rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Email: ";
+    rlutil::setColor(rlutil::CYAN);
+        std::getline(std::cin, email);
+    cond = checkEmail(email);
+
+    while(!cond) {
+        rlutil::setColor(rlutil::RED);
+        std::cout << "Invalid email address. Please try again!\n";
+
+        rlutil::setColor(rlutil::YELLOW);
+            std::cout << "Email: ";
+        rlutil::setColor(rlutil::CYAN);
+            std::getline(std::cin, email);
+        cond = checkEmail(email);
+    }
+
+    rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Password: ";
+    rlutil::setColor(rlutil::CYAN);
+        std::getline(std::cin, pass1);
+    rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Confirm Password: ";
+    rlutil::setColor(rlutil::CYAN);
+        std::getline(std::cin, pass2);
+    cond = checkPass(pass1, pass2);
+
+    while(!cond)
+    {
+        rlutil::setColor(rlutil::RED);
+        std::cout << "Those passwords didn't match. Please try again!\n";
+
+        rlutil::setColor(rlutil::YELLOW);
+            std::cout << "Password: ";
+        rlutil::setColor(rlutil::CYAN);
+            std::getline(std::cin, pass1);
+        rlutil::setColor(rlutil::YELLOW);
+            std::cout << "Confirm Password: ";
+        rlutil::setColor(rlutil::CYAN);
+            std::getline(std::cin, pass2);
+        cond = checkPass(pass1, pass2);
+    }
+
+    User temp(username, pass1, email);
+    users.push_back(temp);
+
+    out << temp;
+    out.close();
+}
+
+/* Function that  creates a new admin account in the app*/
+void Interface::signupAdmin(const std::string& fileName) {
+    std::fstream out;
+    out.open(fileName, std::ios::app);
+
+    std::string username, pass1, pass2, email;
+    bool cond;
+
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "Username: ";
+    rlutil::setColor(rlutil::CYAN);
+    std::cin.ignore(100, '\n');
+    std::getline(std::cin, username);
+    cond = checkUsername(username);
+
+    while(!cond) {
+        rlutil::setColor(rlutil::RED);
+        std::cout << "White-spaces are not allowed in username! Please try again!\n";
+
+        rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Username: ";
+        rlutil::setColor(rlutil::CYAN);
+        std::getline(std::cin, username);
+        cond = checkUsername(username);
+    }
+
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "Email: ";
+    rlutil::setColor(rlutil::CYAN);
+    std::getline(std::cin, email);
+    cond = checkEmail(email);
+
+    while(!cond) {
+        rlutil::setColor(rlutil::RED);
+        std::cout << "Invalid email address. Please try again!\n";
+
+        rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Email: ";
+        rlutil::setColor(rlutil::CYAN);
+        std::getline(std::cin, email);
+        cond = checkEmail(email);
+    }
+
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "Password: ";
+    rlutil::setColor(rlutil::CYAN);
+    std::getline(std::cin, pass1);
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "Confirm Password: ";
+    rlutil::setColor(rlutil::CYAN);
+    std::getline(std::cin, pass2);
+    cond = checkPass(pass1, pass2);
+
+    while(!cond)
+    {
+        rlutil::setColor(rlutil::RED);
+        std::cout << "Those passwords didn't match. Please try again!\n";
+
+        rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Password: ";
+        rlutil::setColor(rlutil::CYAN);
+        std::getline(std::cin, pass1);
+        rlutil::setColor(rlutil::YELLOW);
+        std::cout << "Confirm Password: ";
+        rlutil::setColor(rlutil::CYAN);
+        std::getline(std::cin, pass2);
+        cond = checkPass(pass1, pass2);
+    }
+
+    Admin temp(username, pass1, email);
+    admins.push_back(temp);
+
+    out << temp;
+    out.close();
+}
+
+/** LOGIN METHODS **/
+
+/* Function that shows the login form. */
 void Interface::login() {
     rlutil::cls();
     rlutil::setColor(rlutil::YELLOW);
@@ -113,205 +328,6 @@ void Interface::login() {
     }
 }
 
-void Interface::signup() {
-    rlutil::cls();
-    rlutil::setColor(rlutil::YELLOW);
-
-    std::cout << "-------------------------------------------------\n";
-    std::cout << "                    Signup\n";
-    std::cout << "-------------------------------------------------\n\n";
-
-    std::cout << "Please select an option from the menu below: \n";
-    std::cout << "1. Signup as User\n";
-    std::cout << "2. Signup as Admin\n";
-    std::cout << "3. Return to Main Menu\n";
-    std::cout << "4. Quit\n\n";
-
-    std::cout << "Please select your choice: ";
-    rlutil::setColor(rlutil::CYAN);
-    std::cin >> option;
-
-    switch(option) {
-        case 1: {
-            signupUser(userFile);
-            break;
-        }
-        case 2: {
-            signupAdmin(adminFile);
-            break;
-        }
-        case 3: {
-            startApp();
-            return;
-        }
-        case 4: {
-            rlutil::setColor(rlutil::RED);
-            waitkey;
-            break;
-        }
-        default: {
-            rlutil::setColor(rlutil::RED);
-            std::cout << "Incorrect option!\n";
-            signup();
-            break;
-        }
-    }
-}
-
-void Interface::signupAdmin(const std::string& fileName) {
-    auto itA = admins.begin();
-    std::ofstream out;
-    out.open(fileName, std::ios::app);
-
-    std::string username, pass1, pass2, email;
-    bool cond;
-
-    std::cout << "Username: ";
-    std::cin.ignore(100, '\n');
-
-    std::getline(std::cin, username);
-    cond = checkUsername(username);
-
-    while(!cond) {
-        std::cout << "White-spaces are not allowed in username! Please try again!\n";
-
-        std::cout << "Username: ";
-        std::getline(std::cin, username);
-        cond = checkUsername(username);
-    }
-
-    std::cout << "Email: ";
-    std::getline(std::cin, email);
-    cond = checkEmail(email);
-
-    while(!cond) {
-        std::cout << "Invalid email address. Please try again!\n";
-
-        std::cout << "Email: ";
-        std::getline(std::cin, email);
-        cond = checkEmail(email);
-    }
-
-    std::cout << "Password: ";
-    std::getline(std::cin, pass1);
-    std::cout << "Confirm Password: ";
-    std::getline(std::cin, pass2);
-    cond = checkPass(pass1, pass2);
-
-    while(!cond)
-    {
-        std::cout << "Those passwords didn't match. Please try again!\n";
-
-        std::cout << "Password: ";
-        std::getline(std::cin, pass1);
-        std::cout << "Confirm Password: ";
-        std::getline(std::cin, pass2);
-        cond = checkPass(pass1, pass2);
-    }
-
-    Admin temp(username, pass1, email);
-    admins.insert(itA, temp);
-    ++itA;
-
-    out << temp;
-
-    out.close();
-}
-
-void Interface::signupUser(const std::string& fileName) {
-    auto itU = users.begin();
-
-    std::ofstream out;
-    out.open(fileName, std::ios::app);
-
-    std::string username, pass1, pass2, email, name;
-    std::string dummy;
-    bool cond;
-
-    std::cout << "Name: ";
-    std::cin.ignore(100, '\n');
-
-    std::getline(std::cin, name);
-
-    std::cout << "Username: ";
-    std::getline(std::cin, username);
-    cond = checkUsername(username);
-
-    while(!cond) {
-        std::cout << "White-spaces are not allowed in username! Please try again!\n";
-
-        std::cout << "Username: ";
-        std::getline(std::cin, username);
-        cond = checkUsername(username);
-    }
-
-    std::cout << "Email: ";
-    std::getline(std::cin, email);
-    cond = checkEmail(email);
-
-    while(!cond) {
-        std::cout << "Invalid email address. Please try again!\n";
-
-        std::cout << "Email: ";
-        std::getline(std::cin, email);
-        cond = checkEmail(email);
-    }
-
-    std::cout << "Password: ";
-    std::getline(std::cin, pass1);
-    std::cout << "Confirm Password: ";
-    std::getline(std::cin, pass2);
-    cond = checkPass(pass1, pass2);
-
-    while(!cond)
-    {
-        std::cout << "Those passwords didn't match. Please try again!\n";
-
-        std::cout << "Password: ";
-        std::getline(std::cin, pass1);
-        std::cout << "Confirm Password: ";
-        std::getline(std::cin, pass2);
-        cond = checkPass(pass1, pass2);
-    }
-
-    User temp(name, username, pass1, email);
-    users.insert(itU, temp);
-    ++itU;
-
-    out << temp;
-
-    out.close();
-}
-
-bool Interface::checkPass(const std::string& pass1, const std::string& pass2) {
-    if(pass1 == pass2) return true;
-    return false;
-}
-
-bool Interface::checkUsername(const std::string& username) {
-    for(char i : username)
-        if(i == ' ') return false;
-    return true;
-}
-
-bool Interface::checkEmail(const std::string& email) {
-    return email.find('@') != std::string::npos;
-}
-
-bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
-    std::ifstream in(fileName);
-    std::string username, password, name, email;
-    // de implementat logale cu supraincarcare>>
-    while(in) {
-        std::getline(in, username, ';');
-        std::getline(in, password, ';');
-        std::getline(in, email);
-
-        if((username == userOrEmail || email == userOrEmail) && password == pass) return true;
-    }
-    return false;
-}
-
 bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
     std::ifstream in(fileName);
     std::string username, password, email, name;
@@ -328,4 +344,64 @@ bool Interface::loginUser(const std::string& userOrEmail, const std::string& pas
         }
     }
     return false;
+}
+
+bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
+    std::ifstream in(fileName);
+    std::string username, password, name, email;
+    // de implementat logale cu supraincarcare>>
+    while(in) {
+        std::getline(in, username, ';');
+        std::getline(in, password, ';');
+        std::getline(in, email);
+
+        if((username == userOrEmail || email == userOrEmail) && password == pass) return true;
+    }
+    return false;
+}
+
+/** VALIDATION METHODS **/
+
+/* Function that checks if the two passwords are the same */
+bool Interface::checkPass(const std::string& pass1, const std::string& pass2) {
+    return pass1 == pass2;
+}
+
+/* Function that checks if the username contains any spaces */
+bool Interface::checkUsername(const std::string& username) {
+    return username.find(' ') == std::string::npos;
+}
+
+/* Function that checks if the email contains 'at' char */
+bool Interface::checkEmail(const std::string& email) {
+    return email.find('@') != std::string::npos;
+}
+
+/** LOADING DATA METHODS **/
+
+void Interface::loadUsersData(const std::string& fileName, std::vector<User>& users) {
+    std::ifstream fin(fileName);
+    std::string username, password, email;
+
+    while(!fin.eof()) {
+        fin >> username >> password >> email;
+        User temp(username, password, email);
+        users.push_back(temp);
+    }
+
+    fin.close();
+}
+
+void Interface::loadAdminsData(const std::string& fileName, std::vector<Admin>& admins) {
+    std::ifstream fin(fileName);
+
+    std::string username, password, email;
+
+    while(!fin.eof()) {
+        fin >> username >> password >> email;
+        Admin temp(username, password, email);
+        admins.push_back(temp);
+    }
+
+    fin.close();
 }
