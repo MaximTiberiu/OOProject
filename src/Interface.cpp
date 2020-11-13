@@ -5,7 +5,6 @@
 #include <thread>
 
 #define waitkey rlutil::anykey("Press any key to continue...\n")
-//#define time 3000
 
 
 /* Function that opens the app. */
@@ -288,26 +287,44 @@ void Interface::login() {
             std::cout << "Password: ";
             std::getline(std::cin, pass);
 
-            if (loginUser(user, pass, userFile))
-                std::cout << "Bine ai venit, " << user << "!\n";
+            if(loginUser(user, pass, userFile)){
+              //rlutil::cls();
+              rlutil::setColor(rlutil::GREEN);
+
+              std::cout << "Loading...\n";
+              for(int i = 0 ; i < 9 ; i++) {
+                  std::cout << '-';
+                  std::this_thread::sleep_for(std::chrono::milliseconds(15));
+              }
+              panel(user);
+            }
             break;
         }
         case 2: {
             std::string user, pass;
             std::cout << "Username: ";
             std::cin.ignore(100, '\n');
+
             std::getline(std::cin, user);
 
             std::cout << "Password: ";
             std::getline(std::cin, pass);
 
-            if (loginAdmin(user, pass, adminFile))
-                std::cout << "Bine ai venit, admin!\n";
+            if(loginAdmin(user, pass, adminFile)){
+                rlutil::setColor(rlutil::GREEN);
 
+                std::cout << "Loading...\n";
+                for(int i = 0 ; i < 9 ; i++) {
+                    std::cout << '-';
+                    std::this_thread::sleep_for(std::chrono::seconds(10));
+                }
+                std::cout << "\n";
+                panel(user);
+            }
             break;
         }
         case 3: {
-            // login->
+            panel("GUEST");
             return;
         }
         case 4: {
@@ -329,36 +346,20 @@ void Interface::login() {
 }
 
 bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
-    std::ifstream in(fileName);
-    std::string username, password, email, name;
-    // de implementat logale cu supraincarcare>>
-    while(in) {
-        std::getline(in, username, ';');
-        std::getline(in, password, ';');
-        std::getline(in, email, ';');
-        std::getline(in, name);
-        if((username == userOrEmail || email == userOrEmail) && password == pass)
-        {
-            //std::cout << "buna, " << name << "!";
+    for(auto & user : users)
+        if(userOrEmail.compare(user.getUsername()) || userOrEmail.compare(user.getEmail()) && pass.compare(user.getPassword()))
             return true;
-        }
-    }
+
     return false;
 }
 
-bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
-    std::ifstream in(fileName);
-    std::string username, password, name, email;
-    // de implementat logale cu supraincarcare>>
-    while(in) {
-        std::getline(in, username, ';');
-        std::getline(in, password, ';');
-        std::getline(in, email);
+/*bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
+    for(auto & user : admins)
+        if(userOrEmail.compare(admins.getUsername()) || userOrEmail.compare(admins.getEmail()) && pass.compare(admins.getPassword()))
+            return true;
 
-        if((username == userOrEmail || email == userOrEmail) && password == pass) return true;
-    }
     return false;
-}
+}*/
 
 /** VALIDATION METHODS **/
 
@@ -404,4 +405,12 @@ void Interface::loadAdminsData(const std::string& fileName, std::vector<Admin>& 
     }
 
     fin.close();
+}
+
+void Interface::panel(const std::string& user) {
+    rlutil::cls();
+    std::cout << "-------------------------------------------------\n";
+    std::cout << "                    Bine ai venit, " << user <<"!\n";
+    std::cout << "-------------------------------------------------\n\n";
+
 }

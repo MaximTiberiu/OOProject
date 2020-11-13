@@ -34,6 +34,9 @@ private:
     static void loadUsersData(const std::string&, std::vector<User>&);
     static void loadAdminsData(const std::string&, std::vector<Admin>&);
 
+    // main panel method
+    static void panel(const std::string&);
+
 public:
     void startApp();
 };
