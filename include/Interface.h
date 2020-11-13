@@ -32,11 +32,4 @@ private:
 
 public:
     void startApp();
-    //void startAppTEST(std::ifstream&);
-
-    static void openFile(std::ifstream&, const std::string&);
-    static void openFile(std::ofstream&, const std::string&);
-
-    static void closeFile(std::ifstream&);
-    static void closeFile(std::ofstream&);
 };
