@@ -1,0 +1,1 @@
+python main.py ../testFiles/testFile1.txt

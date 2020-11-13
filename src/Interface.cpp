@@ -1,68 +1,163 @@
 #include "../include/Interface.h"
+#include "../rlutil/rlutil.h"
+#include <iostream>
 
-void Interface::startApp() {
-    std::cout << "\t\t\t\tReddit++\n";
-
-    std::cout << "LOG IN - 1\nSIGN UP - 2\n\n";
-
-    std::cin >> opt;
-
-    if(opt == 1)
-        login();
-    else
-        signup();
+void Interface::openFile(std::ifstream& fin, const std::string& fileName) {
+    fin.open(fileName);
 }
 
-void Interface::login() {
-    system("cls");
-    std::cout << "\t\t\t\tReddit++\n";
+void Interface::openFile(std::ofstream& fout, const std::string& fileName) {
+    fout.open(fileName);
+}
 
-    std::cout << "USER - 1\nADMIN - 2\n\n";
+void Interface::closeFile(std::ifstream& fin) {
+    fin.close();
+}
 
-    std::cin >> opt;
+void Interface::closeFile(std::ofstream& fout) {
+    fout.close();
+}
 
-    if(opt == 1) {
-        std::string user, pass;
-        std::cout << "Username: ";
-        std::cin.ignore(100, '\n');
+/*void Interface::startAppTEST(std::ifstream& fin) {
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "-------------------------------------------------\n";
+    std::cout << "                    Reddit++\n";
+    std::cout << "-------------------------------------------------\n\n";
 
-        std::getline(std::cin, user);
+    std::cout << "Please select an option from the menu below: \n";
+    std::cout << "1. Login\n";
+    std::cout << "2. Create a New Account\n";
+    std::cout << "3. Quit\n\n";
 
-        std::cout << "Password: ";
-        std::getline(std::cin, pass);
+    std::cout << "Please select your choice: ";
+    fin >> option;
 
-        if (loginUser(user, pass, userFile))
-            std::cout << "Bine ai venit, " << user << "!\n";
+    switch(option) {
+        case 1: {
+            login();
+            break;
+        }
+        case 2: {
+            signup();
+            break;
+        }
+        case 3: {
+            return;
+        }
     }
-    else {
-        std::string user, pass;
-        std::cout << "Username: ";
-        std::cin.ignore(100, '\n');
-        std::getline(std::cin, user);
+}*/
 
-        std::cout << "Password: ";
-        std::getline(std::cin, pass);
+void Interface::startApp() {
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "-------------------------------------------------\n";
+    std::cout << "                    Reddit++\n";
+    std::cout << "-------------------------------------------------\n\n";
 
-        if (loginAdmin(user, pass, adminFile))
-            std::cout << "Bine ai venit, admin!\n";
+    std::cout << "Please select an option from the menu below: \n";
+    std::cout << "1. Login\n";
+    std::cout << "2. Create a New Account\n";
+    std::cout << "3. Quit\n\n";
+
+    std::cout << "Please select your choice: ";
+    rlutil::setColor(rlutil::CYAN);
+    std::cin >> option;
+
+    switch(option) {
+        case 1: {
+            login();
+            break;
+        }
+        case 2: {
+            signup();
+            break;
+        }
+        case 3: {
+
+        }
+    }
+}
+
+
+
+void Interface::login() {
+    rlutil::cls();
+    rlutil::setColor(rlutil::YELLOW);
+
+    std::cout << "-------------------------------------------------\n";
+    std::cout << "                    Login\n";
+    std::cout << "-------------------------------------------------\n\n";
+
+    std::cout << "Please select an option from the menu below: \n";
+    std::cout << "1. Login as User\n";
+    std::cout << "2. Login as Admin\n";
+    std::cout << "3. Login as Guest\n";
+    std::cout << "4. Return to Main Menu\n";
+    std::cout << "5. Quit\n\n";
+
+    std::cout << "Please select your choice: ";
+    rlutil::setColor(rlutil::CYAN);
+    std::cin >> option;
+
+    switch(option) {
+        case 1: {
+            std::string user, pass;
+            std::cout << "Username: ";
+            std::cin.ignore(100, '\n');
+
+            std::getline(std::cin, user);
+
+            std::cout << "Password: ";
+            std::getline(std::cin, pass);
+
+            if (loginUser(user, pass, userFile))
+                std::cout << "Bine ai venit, " << user << "!\n";
+
+            break;
+        }
+        case 2: {
+            std::string user, pass;
+            std::cout << "Username: ";
+            std::cin.ignore(100, '\n');
+            std::getline(std::cin, user);
+
+            std::cout << "Password: ";
+            std::getline(std::cin, pass);
+
+            if (loginAdmin(user, pass, adminFile))
+                std::cout << "Bine ai venit, admin!\n";
+
+            break;
+        }
+        case 3: {
+            int x;
+            return;
+        }
+        case 4: {
+            int y;
+            return;
+        }
+        case 5: {
+            return;
+        }
     }
 }
 
 void Interface::signup() {
-    system("cls");
+    rlutil::cls();
     std::cout << "\t\t\t\tReddit++\n";
 
     std::cout << "USER - 1\nADMIN - 2\n\n";
 
-    std::cin >> opt;
+    std::cin >> option;
 
-    if(opt == 1)
+    if(option == 1)
         signupUser(userFile);
     else
         signupAdmin(adminFile);
 }
 
 void Interface::signupAdmin(const std::string& fileName) {
+    auto itA = admins.begin();
     std::ofstream out;
     out.open(fileName, std::ios::app);
 
@@ -122,6 +217,8 @@ void Interface::signupAdmin(const std::string& fileName) {
 }
 
 void Interface::signupUser(const std::string& fileName) {
+    auto itU = users.begin();
+
     std::ofstream out;
     out.open(fileName, std::ios::app);
 
@@ -196,7 +293,7 @@ bool Interface::checkUsername(const std::string& username) {
 }
 
 bool Interface::checkEmail(const std::string& email) {
-    return email.find("@") != std::string::npos;
+    return email.find('@') != std::string::npos;
 }
 
 bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {

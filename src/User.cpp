@@ -41,4 +41,5 @@ void User::setGrade(const std::string& newGrade) {
 
 std::ostream &operator<< (std::ostream &out, const User &user) {
     out << user.username << ";" << user.password << ";" << user.email << ";" << user.name;
+    return out;
 }

@@ -1,23 +1,16 @@
 #pragma once
 
-// include
-#include <iostream>
-#include <fstream>
-#include <stdlib.h>
 #include <list>
-
 #include "Admin.h"
 #include "User.h"
+#include <fstream>
 
 class Interface {
 private:
     std::list<Admin> admins;
-    std::list<Admin>::iterator itA = admins.begin();
-
     std::list<User> users;
-    std::list<User>::iterator itU = users.begin();
 
-    unsigned short opt;
+    unsigned short option;
 
     const std::string adminFile = "../appFiles/admins.txt";
     const std::string userFile = "../appFiles/users.txt";
@@ -39,4 +32,11 @@ private:
 
 public:
     void startApp();
+    //void startAppTEST(std::ifstream&);
+
+    static void openFile(std::ifstream&, const std::string&);
+    static void openFile(std::ofstream&, const std::string&);
+
+    static void closeFile(std::ifstream&);
+    static void closeFile(std::ofstream&);
 };

@@ -3,9 +3,19 @@
 #include "include/Interface.h"
 
 int main() {
+    std::string testFile = "testFile1.txt";
+
     Interface i;
+
+    std::ifstream fin;
+    std::ofstream fout;
+
+    /*Interface::openFile(fin, testFile);
+    i.startAppTEST(fin);
+    Interface::closeFile(fin);*/
+
     i.startApp();
 
-    system("pause");
+    std::cin.get();
     return 0;
 }
