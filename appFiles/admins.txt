@@ -1,3 +1,0 @@
-admin1 a1 a1@a
-admin2 a2 a1@a
-admin3 a3 a1@a
