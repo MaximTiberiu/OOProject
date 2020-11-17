@@ -13,7 +13,7 @@ void Interface::startApp() {
     loadUsersData(userFile, users);
     loadAdminsData(adminFile, admins);
 
-    //rlutil::cls();
+    rlutil::cls();
     rlutil::setColor(rlutil::YELLOW);
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Reddit++\n";
@@ -31,20 +31,21 @@ void Interface::startApp() {
     switch(option) {
         case 1: {
             login();
-            break;
+            return;
         }
         case 2: {
             signup();
-            break;
+            return;
         }
         case 3: {
             rlutil::setColor(rlutil::RED);
             waitkey;
-            break;
+            return;
         }
         default: {
             rlutil::setColor(rlutil::RED);
             std::cout << "Incorrect option!\n";
+
             std::this_thread::sleep_for(std::chrono::seconds(2));
             startApp();
             return;
@@ -76,11 +77,11 @@ void Interface::signup() {
     switch(option) {
         case 1: {
             signupUser(userFile);
-            break;
+            return;
         }
         case 2: {
             signupAdmin(adminFile);
-            break;
+            return;
         }
         case 3: {
             startApp();
@@ -89,13 +90,12 @@ void Interface::signup() {
         case 4: {
             rlutil::setColor(rlutil::RED);
             waitkey;
-            break;
+            return;
         }
         default: {
             rlutil::setColor(rlutil::RED);
             std::cout << "Incorrect option!\n";
             std::this_thread::sleep_for(std::chrono::seconds(2));
-
             signup();
             return;
         }
@@ -174,8 +174,12 @@ void Interface::signupUser(const std::string& fileName) {
     User temp(username, pass1, email);
     users.push_back(temp);
 
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "Your account has been successfully created! Please wait...\n";
+    std::this_thread::sleep_for(std::chrono::seconds (5));
     out << temp;
     out.close();
+    startApp();
 }
 
 /* Function that  creates a new admin account in the app*/
@@ -231,8 +235,7 @@ void Interface::signupAdmin(const std::string& fileName) {
     std::getline(std::cin, pass2);
     cond = checkPass(pass1, pass2);
 
-    while(!cond)
-    {
+    while(!cond) {
         rlutil::setColor(rlutil::RED);
         std::cout << "Those passwords didn't match. Please try again!\n";
 
@@ -246,12 +249,16 @@ void Interface::signupAdmin(const std::string& fileName) {
         std::getline(std::cin, pass2);
         cond = checkPass(pass1, pass2);
     }
-
     Admin temp(username, pass1, email);
     admins.push_back(temp);
 
+    rlutil::setColor(rlutil::YELLOW);
+    std::cout << "Your account has been successfully created! Please wait...\n";
+    std::this_thread::sleep_for(std::chrono::seconds (5));
+
     out << temp;
     out.close();
+    startApp();
 }
 
 /** LOGIN METHODS **/
@@ -278,6 +285,8 @@ void Interface::login() {
 
     switch(option) {
         case 1: {
+            User temp;
+            std::cout << temp.getUsername() << "\n";
             std::string user, pass;
             std::cout << "Username: ";
             std::cin.ignore(100, '\n');
@@ -287,20 +296,26 @@ void Interface::login() {
             std::cout << "Password: ";
             std::getline(std::cin, pass);
 
-            if(loginUser(user, pass, userFile)){
-              //rlutil::cls();
+            if(loginUser(user, pass, userFile, temp)){
               rlutil::setColor(rlutil::GREEN);
-
               std::cout << "Loading...\n";
+
               for(int i = 0 ; i < 9 ; i++) {
                   std::cout << '-';
                   std::this_thread::sleep_for(std::chrono::milliseconds(15));
               }
-              panel(user);
+              panel(temp);
             }
-            break;
+            else {
+                rlutil::setColor(rlutil::RED);
+                std::cout << "Login unsuccessful. Please try again...\n";
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                login();
+            }
+            return;
         }
         case 2: {
+            Admin temp;
             std::string user, pass;
             std::cout << "Username: ";
             std::cin.ignore(100, '\n');
@@ -310,21 +325,27 @@ void Interface::login() {
             std::cout << "Password: ";
             std::getline(std::cin, pass);
 
-            if(loginAdmin(user, pass, adminFile)){
+            if(loginAdmin(user, pass, adminFile, temp)){
                 rlutil::setColor(rlutil::GREEN);
-
                 std::cout << "Loading...\n";
+
                 for(int i = 0 ; i < 9 ; i++) {
                     std::cout << '-';
-                    std::this_thread::sleep_for(std::chrono::seconds(10));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
                 }
                 std::cout << "\n";
-                panel(user);
+                panel(temp);
             }
-            break;
+            else {
+                rlutil::setColor(rlutil::RED);
+                std::cout << "Login unsuccessful. Please try again...\n";
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                login();
+            }
+            return;
         }
         case 3: {
-            panel("GUEST");
+            //panel("GUEST");
             return;
         }
         case 4: {
@@ -333,7 +354,7 @@ void Interface::login() {
         }
         case 5: {
             rlutil::setColor(rlutil::RED);
-            waitkey;
+            //waitkey; - comm pentru Github Action
             break;
         }
         default: {
@@ -345,21 +366,23 @@ void Interface::login() {
     }
 }
 
-bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
-    for(auto & user : users)
-        if(userOrEmail.compare(user.getUsername()) || userOrEmail.compare(user.getEmail()) && pass.compare(user.getPassword()))
+bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, User& user) {
+    for(auto &us : users)
+        if((userOrEmail.compare(us.getUsername()) == 0 || userOrEmail.compare(us.getEmail()) == 0) && pass.compare(us.getPassword()) == 0){
+            user = us;
             return true;
-
+        }
     return false;
 }
 
-/*bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName) {
-    for(auto & user : admins)
-        if(userOrEmail.compare(admins.getUsername()) || userOrEmail.compare(admins.getEmail()) && pass.compare(admins.getPassword()))
+bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, Admin& admin) {
+    for(auto &ad : admins)
+        if((userOrEmail.compare(ad.getUsername()) == 0 || userOrEmail.compare(ad.getEmail()) == 0) && pass.compare(ad.getPassword()) == 0){
+            admin = ad;
             return true;
-
+        }
     return false;
-}*/
+}
 
 /** VALIDATION METHODS **/
 
@@ -389,8 +412,10 @@ void Interface::loadUsersData(const std::string& fileName, std::vector<User>& us
         User temp(username, password, email);
         users.push_back(temp);
     }
-
     fin.close();
+
+    for(auto & user : users)
+        std::cout << user.getUsername() << " ";
 }
 
 void Interface::loadAdminsData(const std::string& fileName, std::vector<Admin>& admins) {
@@ -407,10 +432,21 @@ void Interface::loadAdminsData(const std::string& fileName, std::vector<Admin>& 
     fin.close();
 }
 
-void Interface::panel(const std::string& user) {
+void Interface::panel(User& user) {
     rlutil::cls();
     std::cout << "-------------------------------------------------\n";
-    std::cout << "                    Bine ai venit, " << user <<"!\n";
+    std::cout << "                    Bine ai venit, " << user.getUsername() <<"!\n";
     std::cout << "-------------------------------------------------\n\n";
+    waitkey;
+    return;
 
+}
+
+void Interface::panel(Admin& admin) {
+    rlutil::cls();
+    std::cout << "-------------------------------------------------\n";
+    std::cout << "                    Bine ai venit, " << admin.getUsername() <<"!\n";
+    std::cout << "-------------------------------------------------\n\n";
+    waitkey;
+    return;
 }

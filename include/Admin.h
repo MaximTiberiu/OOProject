@@ -8,6 +8,7 @@ class Admin : public Participant {
 private:
 
 public:
+    Admin();
     Admin(const std::string&, const std::string&, const std::string&);
     Admin(const Admin&);
     ~Admin();
