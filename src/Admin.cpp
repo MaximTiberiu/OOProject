@@ -1,6 +1,8 @@
 // include
 #include "../include/Admin.h"
 
+Admin::Admin() = default;
+
 Admin::Admin(const std::string& username, const std::string& password, const std::string& email) {
     this->username = username;
     this->password = password;

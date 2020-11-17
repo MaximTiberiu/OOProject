@@ -3,6 +3,7 @@
 #include <vector>
 #include "Admin.h"
 #include "User.h"
+#include "Guest.h"
 #include <fstream>
 
 class Interface {
@@ -22,8 +23,8 @@ private:
 
     // login methods
     void login();
-    bool loginUser(const std::string&, const std::string&, const std::string&);
-    bool loginAdmin(const std::string&, const std::string&, const std::string&);
+    bool loginUser(const std::string&, const std::string&, const std::string&, User& user);
+    bool loginAdmin(const std::string&, const std::string&, const std::string&, Admin& admin);
 
     // validation methods
     static bool checkPass(const std::string&, const std::string&);
@@ -33,6 +34,11 @@ private:
     // loading data methods
     static void loadUsersData(const std::string&, std::vector<User>&);
     static void loadAdminsData(const std::string&, std::vector<Admin>&);
+
+    // main panel method
+    static void panel(User&);
+    static void panel(Admin&);
+    static void panel(Guest&);
 
 public:
     void startApp();

@@ -8,14 +8,15 @@
 class User : public Participant {
 private:
 
-    time_t dateTime;
-    tm *ltm;
+    time_t dateTime{};
+    tm *ltm{};
 
     std::string grade;
     
     void fsetGrade();
 
 public:
+    User();
     User(const std::string&, const std::string&, const std::string&);
     User(const User &);
     ~User();
