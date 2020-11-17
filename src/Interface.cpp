@@ -171,7 +171,7 @@ void Interface::signupUser(const std::string& fileName) {
         cond = checkPass(pass1, pass2);
     }
 
-    User temp(username, pass1, email);
+    User temp(username, encryptPass(pass1, key), email);
     users.push_back(temp);
 
     rlutil::setColor(rlutil::YELLOW);
@@ -249,7 +249,7 @@ void Interface::signupAdmin(const std::string& fileName) {
         std::getline(std::cin, pass2);
         cond = checkPass(pass1, pass2);
     }
-    Admin temp(username, pass1, email);
+    Admin temp(username, encryptPass(pass1, key), email);
     admins.push_back(temp);
 
     rlutil::setColor(rlutil::YELLOW);
@@ -345,7 +345,7 @@ void Interface::login() {
             return;
         }
         case 3: {
-            //panel("GUEST");
+            // panel("GUEST");
             return;
         }
         case 4: {
@@ -368,7 +368,7 @@ void Interface::login() {
 
 bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, User& user) {
     for(auto &us : users)
-        if((userOrEmail.compare(us.getUsername()) == 0 || userOrEmail.compare(us.getEmail()) == 0) && pass.compare(us.getPassword()) == 0){
+        if((userOrEmail.compare(us.getUsername()) == 0 || userOrEmail.compare(us.getEmail()) == 0) && encryptPass(pass, key).compare(us.getPassword()) == 0){
             user = us;
             return true;
         }
@@ -377,7 +377,7 @@ bool Interface::loginUser(const std::string& userOrEmail, const std::string& pas
 
 bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, Admin& admin) {
     for(auto &ad : admins)
-        if((userOrEmail.compare(ad.getUsername()) == 0 || userOrEmail.compare(ad.getEmail()) == 0) && pass.compare(ad.getPassword()) == 0){
+        if((userOrEmail.compare(ad.getUsername()) == 0 || userOrEmail.compare(ad.getEmail()) == 0) && encryptPass(pass, key).compare(ad.getPassword()) == 0){
             admin = ad;
             return true;
         }
@@ -399,6 +399,24 @@ bool Interface::checkUsername(const std::string& username) {
 /* Function that checks if the email contains 'at' char */
 bool Interface::checkEmail(const std::string& email) {
     return email.find('@') != std::string::npos;
+}
+
+bool Interface::checkDuplicateUsername(const std::string& username) {
+    for(auto &us : users)
+        if(username.compare(us.getUsername()) == 0) return false;
+
+    for(auto &ad : admins)
+        if(username.compare(ad.getUsername()) == 0) return false;
+    return true;
+}
+
+bool Interface::checkDuplicateEmail(const std::string& email) {
+    for(auto &us : users)
+        if(email.compare(us.getEmail()) == 0) return false;
+
+    for(auto &ad : admins)
+        if(email.compare(ad.getEmail()) == 0) return false;
+    return true;
 }
 
 /** LOADING DATA METHODS **/
@@ -449,4 +467,14 @@ void Interface::panel(Admin& admin) {
     std::cout << "-------------------------------------------------\n\n";
     waitkey;
     return;
+}
+
+/** SECURITY METHODS **/
+
+std::string Interface::encryptPass(const std::string& password, const char* key) {
+    std::string encryptedPass = password;
+    for(int i = 0 ; i < encryptedPass.size() ; i++) {
+        encryptedPass = password[i] ^ key[i % (sizeof(key) / sizeof(char))];
+    }
+    return encryptedPass;
 }
