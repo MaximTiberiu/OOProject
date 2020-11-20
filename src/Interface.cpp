@@ -3,11 +3,14 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <regex>
+
 
 #define waitkey rlutil::anykey("Press any key to continue...\n")
 
+// MAIN METHOD
 
-/* Function that opens the app. */
+/// Function that opens the app.
 void Interface::startApp() {
     // loading data
     loadUsersData(userFile, users);
@@ -53,9 +56,9 @@ void Interface::startApp() {
     }
 }
 
-/** SIGNUP METHODS **/
+// SIGNUP METHODS
 
-/* Function that shows the signup form */
+/// Function that shows the signup form.
 void Interface::signup() {
     rlutil::cls();
     rlutil::setColor(rlutil::YELLOW);
@@ -102,47 +105,54 @@ void Interface::signup() {
     }
 }
 
-/* Function that  creates a new user account in the app */
+/**
+ * Function that  creates a new user account in the app.
+ *
+ * @param[in] fileName std::string,
+ * output file that stores users' data
+ */
 void Interface::signupUser(const std::string& fileName) {
     std::fstream out;
     out.open(fileName, std::ios::app);
 
     std::string username, pass1, pass2, email;
     bool cond;
+    std::cin.ignore(100, '\n');
 
-    rlutil::setColor(rlutil::YELLOW);
-        std::cout << "Username: ";
-    rlutil::setColor(rlutil::CYAN);
-        std::cin.ignore(100, '\n');
-        std::getline(std::cin, username);
-    cond = checkUsername(username);
-
+    cond = false;
     while(!cond) {
-        rlutil::setColor(rlutil::RED);
-        std::cout << "White-spaces are not allowed in username! Please try again!\n";
-
         rlutil::setColor(rlutil::YELLOW);
-            std::cout << "Username: ";
+        std::cout << "Username: ";
         rlutil::setColor(rlutil::CYAN);
-            std::getline(std::cin, username);
-        cond = checkUsername(username);
+        std::getline(std::cin, username);
+
+        if(!checkUsername(username)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "White-spaces are not allowed in username! Please try again!\n";
+        }
+        else if(!checkDuplicateUsername(username)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Username "<< username <<" is already taken! Please try again!\n";
+        }
+        else cond = true;
     }
 
-    rlutil::setColor(rlutil::YELLOW);
-        std::cout << "Email: ";
-    rlutil::setColor(rlutil::CYAN);
-        std::getline(std::cin, email);
-    cond = checkEmail(email);
-
+    cond = false;
     while(!cond) {
-        rlutil::setColor(rlutil::RED);
-        std::cout << "Invalid email address. Please try again!\n";
-
         rlutil::setColor(rlutil::YELLOW);
-            std::cout << "Email: ";
+        std::cout << "Email: ";
         rlutil::setColor(rlutil::CYAN);
-            std::getline(std::cin, email);
-        cond = checkEmail(email);
+        std::getline(std::cin, email);
+
+        if(!checkEmail(email)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Invalid email address. Please try again!\n";
+        }
+        else if(!checkDuplicateEmail(email)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Email " << email <<" is already taken. Please try again!\n";
+        }
+        else cond = true;
     }
 
     rlutil::setColor(rlutil::YELLOW);
@@ -182,7 +192,12 @@ void Interface::signupUser(const std::string& fileName) {
     startApp();
 }
 
-/* Function that  creates a new admin account in the app*/
+/**
+ * Function that  creates a new admin account in the app.
+ *
+ * @param[in] fileName std::string,
+ * output file that stores admins' data
+ */
 void Interface::signupAdmin(const std::string& fileName) {
     std::fstream out;
     out.open(fileName, std::ios::app);
@@ -261,9 +276,9 @@ void Interface::signupAdmin(const std::string& fileName) {
     startApp();
 }
 
-/** LOGIN METHODS **/
+// LOGIN METHODS
 
-/* Function that shows the login form. */
+/// Function that shows the login form.
 void Interface::login() {
     rlutil::cls();
     rlutil::setColor(rlutil::YELLOW);
@@ -302,7 +317,7 @@ void Interface::login() {
 
               for(int i = 0 ; i < 9 ; i++) {
                   std::cout << '-';
-                  std::this_thread::sleep_for(std::chrono::milliseconds(15));
+                  std::this_thread::sleep_for(std::chrono::milliseconds(30));
               }
               panel(temp);
             }
@@ -331,7 +346,7 @@ void Interface::login() {
 
                 for(int i = 0 ; i < 9 ; i++) {
                     std::cout << '-';
-                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(30));
                 }
                 std::cout << "\n";
                 panel(temp);
@@ -355,17 +370,34 @@ void Interface::login() {
         case 5: {
             rlutil::setColor(rlutil::RED);
             //waitkey; - comm pentru Github Action
-            break;
+            return;
         }
         default: {
             rlutil::setColor(rlutil::RED);
             std::cout << "Incorrect option!\n";
             login();
-            break;
+            return;
         }
     }
 }
 
+/**
+ * Function that validates an user by its username/email and password
+ *
+ * @param[in] userOrEmail std::string,
+ * field that contains user's username or email
+ *
+ * @param[in] pass std::string,
+ * filed that contains user's password
+ *
+ * @param[in] fileName std::string,
+ * input file that stores all users' authetication data
+ *
+ * @param[out] user User,
+ * object that stores all data about it in case of validation
+ *
+ * @return true, if the authentication was succesdful, else false
+ */
 bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, User& user) {
     for(auto &us : users)
         if((userOrEmail.compare(us.getUsername()) == 0 || userOrEmail.compare(us.getEmail()) == 0) && encryptPass(pass, key).compare(us.getPassword()) == 0){
@@ -375,6 +407,24 @@ bool Interface::loginUser(const std::string& userOrEmail, const std::string& pas
     return false;
 }
 
+
+/**
+ * Function that validates an admin by its username/email and password
+ *
+ * @param[in] userOrEmail std::string,
+ * field that contains admin's username or email
+ *
+ * @param[in] pass std::string,
+ * filed that contains admin's password
+ *
+ * @param[in] fileName std::string,
+ * input file that stores all admins' authetication data
+ *
+ * @param[out] admin Admin,
+ * object that stores all data about it in case of validation
+ *
+ * @return true, if the authentication was succesdful, else false
+ */
 bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, Admin& admin) {
     for(auto &ad : admins)
         if((userOrEmail.compare(ad.getUsername()) == 0 || userOrEmail.compare(ad.getEmail()) == 0) && encryptPass(pass, key).compare(ad.getPassword()) == 0){
@@ -384,23 +434,56 @@ bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pa
     return false;
 }
 
-/** VALIDATION METHODS **/
+// VALIDATION METHODS
 
-/* Function that checks if the two passwords are the same */
+/**
+ * Function that checks if the two passwords are the same
+ *
+ * @param[in] pass1 std::string,
+ * first password
+ *
+ * @param[in] pass2 std::string,
+ * second password
+ *
+ * @return true, if the passwords are equals, else false
+ */
 bool Interface::checkPass(const std::string& pass1, const std::string& pass2) {
     return pass1 == pass2;
 }
 
-/* Function that checks if the username contains any spaces */
+/**
+ * Function that checks if the username contains any spaces
+ *
+ * @param[in] username std::string,
+ * username field
+ *
+ * @return true, if username is valid, else false
+ */
 bool Interface::checkUsername(const std::string& username) {
     return username.find(' ') == std::string::npos;
 }
 
-/* Function that checks if the email contains 'at' char */
+/**
+ * Function that checks if the email contains 'at' char
+ *
+ * @param[in] email std::string,
+ * email field
+ *
+ * @return true if email is valid, else false
+ */
 bool Interface::checkEmail(const std::string& email) {
-    return email.find('@') != std::string::npos;
+    const std::regex pattern("([a-z]+)([_.a-z0-9]*)([a-z0-9]+)(@)([a-z]+)([.a-z]+)([a-z]+)");
+    return std::regex_match(email, pattern);
 }
 
+/**
+ * Function that checks if the valid username is already used by another user/admin
+ *
+ * @param[in] username std::string,
+ * username field
+ *
+ * @return true if username isn't used, else false
+ */
 bool Interface::checkDuplicateUsername(const std::string& username) {
     for(auto &us : users)
         if(username.compare(us.getUsername()) == 0) return false;
@@ -410,6 +493,15 @@ bool Interface::checkDuplicateUsername(const std::string& username) {
     return true;
 }
 
+
+/**
+ * Function that checks if the valid email is already used by another user/admin
+ *
+ * @param[in] email std::string,
+ * email field
+ *
+ * @return true if email isn't used, else false
+ */
 bool Interface::checkDuplicateEmail(const std::string& email) {
     for(auto &us : users)
         if(email.compare(us.getEmail()) == 0) return false;
@@ -419,8 +511,16 @@ bool Interface::checkDuplicateEmail(const std::string& email) {
     return true;
 }
 
-/** LOADING DATA METHODS **/
-
+// LOADING DATA METHODS
+/**
+ * Function that loads users' authentication datas in app
+ *
+ * @param[in] fileName std::string,
+ * input file that stores the datas
+ *
+ * @param[out] users std::vector<User>,
+ * vector that stores all users' datas existing in fileName
+ */
 void Interface::loadUsersData(const std::string& fileName, std::vector<User>& users) {
     std::ifstream fin(fileName);
     std::string username, password, email;
@@ -436,6 +536,15 @@ void Interface::loadUsersData(const std::string& fileName, std::vector<User>& us
         std::cout << user.getUsername() << " ";
 }
 
+/**
+ * Function that loads admins' authentication datas in app
+ *
+ * @param[in] fileName std::string,
+ * input file that stores the datas
+ *
+ * @param[out] users std::vector<Admin>,
+ * vector that stores all admins' datas existing in fileName
+ */
 void Interface::loadAdminsData(const std::string& fileName, std::vector<Admin>& admins) {
     std::ifstream fin(fileName);
 
@@ -450,27 +559,42 @@ void Interface::loadAdminsData(const std::string& fileName, std::vector<Admin>& 
     fin.close();
 }
 
+// MAIN PANEL METHODS
+
+/// Function that shows the main panel for user
 void Interface::panel(User& user) {
     rlutil::cls();
     std::cout << "-------------------------------------------------\n";
-    std::cout << "                    Bine ai venit, " << user.getUsername() <<"!\n";
+    std::cout << "                    Welcome, " << user.getUsername() <<"!\n";
     std::cout << "-------------------------------------------------\n\n";
     waitkey;
     return;
 
 }
 
+/// Function that shows the main panel for admin
 void Interface::panel(Admin& admin) {
     rlutil::cls();
     std::cout << "-------------------------------------------------\n";
-    std::cout << "                    Bine ai venit, " << admin.getUsername() <<"!\n";
+    std::cout << "                    Welcome, " << admin.getUsername() <<"!\n";
     std::cout << "-------------------------------------------------\n\n";
     waitkey;
     return;
 }
 
-/** SECURITY METHODS **/
+// SECURITY METHODS
 
+/**
+ * Function that encrypt a given password
+ *
+ * @param[in] password std::string,
+ * password field
+ *
+ * @param[in] key char*,
+ * key used to encrypt the password
+ *
+ * @return encrypted password, encryptedPass
+ */
 std::string Interface::encryptPass(const std::string& password, const char* key) {
     std::string encryptedPass = password;
     for(int i = 0 ; i < encryptedPass.size() ; i++) {
