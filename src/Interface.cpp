@@ -117,40 +117,42 @@ void Interface::signupUser(const std::string& fileName) {
 
     std::string username, pass1, pass2, email;
     bool cond;
+    std::cin.ignore(100, '\n');
 
-    rlutil::setColor(rlutil::YELLOW);
-        std::cout << "Username: ";
-    rlutil::setColor(rlutil::CYAN);
-        std::cin.ignore(100, '\n');
-        std::getline(std::cin, username);
-    cond = checkUsername(username);
-
+    cond = false;
     while(!cond) {
-        rlutil::setColor(rlutil::RED);
-        std::cout << "White-spaces are not allowed in username! Please try again!\n";
-
         rlutil::setColor(rlutil::YELLOW);
-            std::cout << "Username: ";
+        std::cout << "Username: ";
         rlutil::setColor(rlutil::CYAN);
-            std::getline(std::cin, username);
-        cond = checkUsername(username);
+        std::getline(std::cin, username);
+
+        if(!checkUsername(username)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "White-spaces are not allowed in username! Please try again!\n";
+        }
+        else if(!checkDuplicateUsername(username)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Username "<< username <<" is already taken! Please try again!\n";
+        }
+        else cond = true;
     }
 
-    rlutil::setColor(rlutil::YELLOW);
-        std::cout << "Email: ";
-    rlutil::setColor(rlutil::CYAN);
-        std::getline(std::cin, email);
-    cond = checkEmail(email);
-
+    cond = false;
     while(!cond) {
-        rlutil::setColor(rlutil::RED);
-        std::cout << "Invalid email address. Please try again!\n";
-
         rlutil::setColor(rlutil::YELLOW);
-            std::cout << "Email: ";
+        std::cout << "Email: ";
         rlutil::setColor(rlutil::CYAN);
-            std::getline(std::cin, email);
-        cond = checkEmail(email);
+        std::getline(std::cin, email);
+
+        if(!checkEmail(email)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Invalid email address. Please try again!\n";
+        }
+        else if(!checkDuplicateEmail(email)) {
+            rlutil::setColor(rlutil::RED);
+            std::cout << "Email " << email <<" is already taken. Please try again!\n";
+        }
+        else cond = true;
     }
 
     rlutil::setColor(rlutil::YELLOW);
@@ -315,7 +317,7 @@ void Interface::login() {
 
               for(int i = 0 ; i < 9 ; i++) {
                   std::cout << '-';
-                  std::this_thread::sleep_for(std::chrono::milliseconds(15));
+                  std::this_thread::sleep_for(std::chrono::milliseconds(30));
               }
               panel(temp);
             }
@@ -344,7 +346,7 @@ void Interface::login() {
 
                 for(int i = 0 ; i < 9 ; i++) {
                     std::cout << '-';
-                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(30));
                 }
                 std::cout << "\n";
                 panel(temp);
