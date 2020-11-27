@@ -512,6 +512,7 @@ bool Interface::checkDuplicateEmail(const std::string& email) {
 }
 
 // LOADING DATA METHODS
+
 /**
  * Function that loads users' authentication datas in app
  *
