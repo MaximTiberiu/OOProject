@@ -2,6 +2,7 @@
 #include "../rlutil/rlutil.h"
 #include <iostream>
 #include <chrono>
+#include <memory>
 #include <thread>
 #include <regex>
 
@@ -181,13 +182,14 @@ void Interface::signupUser(const std::string& fileName) {
         cond = checkPass(pass1, pass2);
     }
 
-    User temp(username, encryptPass(pass1, key), email);
-    users.push_back(temp);
+    auto temp = std::make_unique<User>(username, encryptPass(pass1, key), email);
+    out << temp;
+    users.push_back(std::move(temp));
 
     rlutil::setColor(rlutil::YELLOW);
     std::cout << "Your account has been successfully created! Please wait...\n";
     std::this_thread::sleep_for(std::chrono::seconds (5));
-    out << temp;
+
     out.close();
     startApp();
 }
@@ -264,14 +266,15 @@ void Interface::signupAdmin(const std::string& fileName) {
         std::getline(std::cin, pass2);
         cond = checkPass(pass1, pass2);
     }
-    Admin temp(username, encryptPass(pass1, key), email);
-    admins.push_back(temp);
+
+    auto temp = std::make_unique<Admin>(username, encryptPass(pass1, key), email);
+    out << temp;
+    admins.push_back(std::move(temp));
 
     rlutil::setColor(rlutil::YELLOW);
     std::cout << "Your account has been successfully created! Please wait...\n";
     std::this_thread::sleep_for(std::chrono::seconds (5));
 
-    out << temp;
     out.close();
     startApp();
 }
@@ -400,7 +403,7 @@ void Interface::login() {
  */
 bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, User& user) {
     for(auto &us : users)
-        if((userOrEmail.compare(us.getUsername()) == 0 || userOrEmail.compare(us.getEmail()) == 0) && encryptPass(pass, key).compare(us.getPassword()) == 0){
+        if((userOrEmail.compare(us->getUsername()) == 0 || userOrEmail.compare(us->getEmail()) == 0) && encryptPass(pass, key).compare(us->getPassword()) == 0){
             user = us;
             return true;
         }
@@ -427,7 +430,7 @@ bool Interface::loginUser(const std::string& userOrEmail, const std::string& pas
  */
 bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, Admin& admin) {
     for(auto &ad : admins)
-        if((userOrEmail.compare(ad.getUsername()) == 0 || userOrEmail.compare(ad.getEmail()) == 0) && encryptPass(pass, key).compare(ad.getPassword()) == 0){
+        if((userOrEmail.compare(ad->getUsername()) == 0 || userOrEmail.compare(ad->getEmail()) == 0) && encryptPass(pass, key).compare(ad->getPassword()) == 0){
             admin = ad;
             return true;
         }
@@ -486,10 +489,10 @@ bool Interface::checkEmail(const std::string& email) {
  */
 bool Interface::checkDuplicateUsername(const std::string& username) {
     for(auto &us : users)
-        if(username.compare(us.getUsername()) == 0) return false;
+        if(username.compare(us->getUsername()) == 0) return false;
 
     for(auto &ad : admins)
-        if(username.compare(ad.getUsername()) == 0) return false;
+        if(username.compare(ad->getUsername()) == 0) return false;
     return true;
 }
 
@@ -504,10 +507,10 @@ bool Interface::checkDuplicateUsername(const std::string& username) {
  */
 bool Interface::checkDuplicateEmail(const std::string& email) {
     for(auto &us : users)
-        if(email.compare(us.getEmail()) == 0) return false;
+        if(email.compare(us->getEmail()) == 0) return false;
 
     for(auto &ad : admins)
-        if(email.compare(ad.getEmail()) == 0) return false;
+        if(email.compare(ad->getEmail()) == 0) return false;
     return true;
 }
 
@@ -522,19 +525,19 @@ bool Interface::checkDuplicateEmail(const std::string& email) {
  * @param[out] users std::vector<User>,
  * vector that stores all users' datas existing in fileName
  */
-void Interface::loadUsersData(const std::string& fileName, std::vector<User>& users) {
+void Interface::loadUsersData(const std::string& fileName, std::vector<std::unique_ptr<User>>& users) {
     std::ifstream fin(fileName);
     std::string username, password, email;
 
     while(!fin.eof()) {
         fin >> username >> password >> email;
-        User temp(username, password, email);
-        users.push_back(temp);
+        auto temp = std::make_unique<User>(username, password, email);
+        users.push_back(std::move(temp));
     }
     fin.close();
 
     for(auto & user : users)
-        std::cout << user.getUsername() << " ";
+        std::cout << user->getUsername() << " ";
 }
 
 /**
@@ -543,18 +546,18 @@ void Interface::loadUsersData(const std::string& fileName, std::vector<User>& us
  * @param[in] fileName std::string,
  * input file that stores the datas
  *
- * @param[out] users std::vector<Admin>,
+ * @param[out] admins std::vector<std::unique_ptr<Admin>>,
  * vector that stores all admins' datas existing in fileName
  */
-void Interface::loadAdminsData(const std::string& fileName, std::vector<Admin>& admins) {
+void Interface::loadAdminsData(const std::string& fileName, std::vector<std::unique_ptr<Admin>>& admins) {
     std::ifstream fin(fileName);
 
     std::string username, password, email;
 
     while(!fin.eof()) {
         fin >> username >> password >> email;
-        Admin temp(username, password, email);
-        admins.push_back(temp);
+        auto temp = std::make_unique<Admin>(username, password, email);
+        admins.push_back(std::move(temp));
     }
 
     fin.close();
@@ -569,8 +572,6 @@ void Interface::panel(User& user) {
     std::cout << "                    Welcome, " << user.getUsername() <<"!\n";
     std::cout << "-------------------------------------------------\n\n";
     waitkey;
-    return;
-
 }
 
 /// Function that shows the main panel for admin
@@ -580,7 +581,6 @@ void Interface::panel(Admin& admin) {
     std::cout << "                    Welcome, " << admin.getUsername() <<"!\n";
     std::cout << "-------------------------------------------------\n\n";
     waitkey;
-    return;
 }
 
 // SECURITY METHODS

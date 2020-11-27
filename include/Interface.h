@@ -1,15 +1,16 @@
 #pragma once
 
-#include <vector>
 #include "Admin.h"
 #include "User.h"
 #include "Guest.h"
 #include <fstream>
+#include <vector>
+#include <memory>
 
 class Interface {
 private:
-    std::vector<Admin> admins;
-    std::vector<User> users;
+    std::vector<std::unique_ptr<Admin>> admins;
+    std::vector<std::unique_ptr<User>> users;
 
     unsigned short option;
 
@@ -35,8 +36,8 @@ private:
     bool checkDuplicateEmail(const std::string&);
 
     // loading data methods
-    static void loadUsersData(const std::string&, std::vector<User>&);
-    static void loadAdminsData(const std::string&, std::vector<Admin>&);
+    static void loadUsersData(const std::string&, std::vector<std::unique_ptr<User>>&);
+    static void loadAdminsData(const std::string&, std::vector<std::unique_ptr<Admin>>&);
 
     // main panel method
     static void panel(User&);
