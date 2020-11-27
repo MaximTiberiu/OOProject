@@ -4,15 +4,14 @@
 #include "Participant.h"
 #include <ctime>
 #include <iostream>
+#include <chrono>
 
 class User : public Participant {
 private:
+    unsigned int postsNum;
+    unsigned int likesNum;
+    unsigned int commsNum;
 
-    time_t dateTime{};
-    tm *ltm{};
-
-    std::string grade;
-    
     void fsetGrade();
 
 public:
@@ -23,11 +22,5 @@ public:
 
     friend std::ostream &operator<< (std::ostream &, const User &);
 
-    // getters
-    tm get_dateTime();
-    std::string getGrade();
 
-    // setters
-    void set_dateTime(tm*);
-    void setGrade(const std::string&);
 };

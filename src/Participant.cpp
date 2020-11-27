@@ -13,6 +13,10 @@ std::string Participant::getEmail() {
     return email;
 }
 
+Grade Participant::getGrade() {
+    return grade;
+}
+
 void Participant::setUsername(const std::string& newUsername) {
     this->username = newUsername;
 }
@@ -23,4 +27,8 @@ void Participant::setPassword(const std::string& newPassword) {
 
 void Participant::setEmail(const std::string& newEmail) {
     this->email = newEmail;
+}
+
+void Participant::setGrade(Grade& newGrade) {
+    this->grade = newGrade;
 }
