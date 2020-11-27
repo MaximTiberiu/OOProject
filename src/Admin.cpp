@@ -10,16 +10,16 @@ Admin::Admin(const std::string& username, const std::string& password, const std
     this->grade = master;
 }
 
-Admin::Admin(const Admin &ad) {
-    username = ad.username;
-    email = ad.email;
-    password = ad.password;
-    grade = ad.grade;
+Admin::Admin(const std::unique_ptr<Admin>& ad) {
+    username = ad->username;
+    email = ad->email;
+    password = ad->password;
+    grade = ad->grade;
 }
 
 Admin::~Admin() = default;
 
-std::ostream& operator<<(std::ostream &out, const Admin& admin) {
-    out << admin.username << " " << admin.password << " " << admin.email << "\n";
+std::ostream& operator<<(std::ostream &out, const std::unique_ptr<Admin>& admin) {
+    out << admin->username << " " << admin->password << " " << admin->email << "\n";
     return out;
 }
