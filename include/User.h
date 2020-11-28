@@ -23,5 +23,4 @@ public:
 
     friend std::ostream &operator<< (std::ostream &, const std::unique_ptr<User>&);
 
-
 };
