@@ -6,8 +6,12 @@
 #include <thread>
 #include <regex>
 
-
 #define waitkey rlutil::anykey("Press any key to continue...\n")
+#define setRed rlutil::setColor(rlutil::RED)
+#define setYellow rlutil::setColor(rlutil::YELLOW)
+#define setCyan rlutil::setColor(rlutil::CYAN)
+#define setGreen rlutil::setColor(rlutil::GREEN)
+#define clear rlutil::cls()
 
 // MAIN METHOD
 
@@ -17,8 +21,8 @@ void Interface::startApp() {
     loadUsersData(userFile, users);
     loadAdminsData(adminFile, admins);
 
-    rlutil::cls();
-    rlutil::setColor(rlutil::YELLOW);
+    clear;
+    setYellow;
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Reddit++\n";
     std::cout << "-------------------------------------------------\n\n";
@@ -29,7 +33,7 @@ void Interface::startApp() {
     std::cout << "3. Quit\n\n";
 
     std::cout << "Please select your choice: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
     std::cin >> option;
 
     switch(option) {
@@ -42,12 +46,12 @@ void Interface::startApp() {
             return;
         }
         case 3: {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             waitkey;
             return;
         }
         default: {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             std::cout << "Incorrect option!\n";
 
             std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -61,8 +65,8 @@ void Interface::startApp() {
 
 /// Function that shows the signup form.
 void Interface::signup() {
-    rlutil::cls();
-    rlutil::setColor(rlutil::YELLOW);
+    clear;
+    setYellow;
 
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Signup\n";
@@ -75,7 +79,7 @@ void Interface::signup() {
     std::cout << "4. Quit\n\n";
 
     std::cout << "Please select your choice: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
     std::cin >> option;
 
     switch(option) {
@@ -92,12 +96,12 @@ void Interface::signup() {
             return;
         }
         case 4: {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             waitkey;
             return;
         }
         default: {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             std::cout << "Incorrect option!\n";
             std::this_thread::sleep_for(std::chrono::seconds(2));
             signup();
@@ -122,17 +126,17 @@ void Interface::signupUser(const std::string& fileName) {
 
     cond = false;
     while(!cond) {
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
         std::cout << "Username: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
         std::getline(std::cin, username);
 
         if(!checkUsername(username)) {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             std::cout << "White-spaces are not allowed in username! Please try again!\n";
         }
         else if(!checkDuplicateUsername(username)) {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             std::cout << "Username "<< username <<" is already taken! Please try again!\n";
         }
         else cond = true;
@@ -140,44 +144,44 @@ void Interface::signupUser(const std::string& fileName) {
 
     cond = false;
     while(!cond) {
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
         std::cout << "Email: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
         std::getline(std::cin, email);
 
         if(!checkEmail(email)) {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             std::cout << "Invalid email address. Please try again!\n";
         }
         else if(!checkDuplicateEmail(email)) {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             std::cout << "Email " << email <<" is already taken. Please try again!\n";
         }
         else cond = true;
     }
 
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
         std::cout << "Password: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
         std::getline(std::cin, pass1);
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
         std::cout << "Confirm Password: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
         std::getline(std::cin, pass2);
     cond = checkPass(pass1, pass2);
 
     while(!cond)
     {
-        rlutil::setColor(rlutil::RED);
+        setRed;
         std::cout << "Those passwords didn't match. Please try again!\n";
 
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
             std::cout << "Password: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
             std::getline(std::cin, pass1);
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
             std::cout << "Confirm Password: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
             std::getline(std::cin, pass2);
         cond = checkPass(pass1, pass2);
     }
@@ -186,7 +190,7 @@ void Interface::signupUser(const std::string& fileName) {
     out << temp;
     users.push_back(std::move(temp));
 
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
     std::cout << "Your account has been successfully created! Please wait...\n";
     std::this_thread::sleep_for(std::chrono::seconds (5));
 
@@ -207,62 +211,62 @@ void Interface::signupAdmin(const std::string& fileName) {
     std::string username, pass1, pass2, email;
     bool cond;
 
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
     std::cout << "Username: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
     std::cin.ignore(100, '\n');
     std::getline(std::cin, username);
     cond = checkUsername(username);
 
     while(!cond) {
-        rlutil::setColor(rlutil::RED);
+        setRed;
         std::cout << "White-spaces are not allowed in username! Please try again!\n";
 
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
         std::cout << "Username: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
         std::getline(std::cin, username);
         cond = checkUsername(username);
     }
 
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
     std::cout << "Email: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
     std::getline(std::cin, email);
     cond = checkEmail(email);
 
     while(!cond) {
-        rlutil::setColor(rlutil::RED);
+        setRed;
         std::cout << "Invalid email address. Please try again!\n";
 
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
         std::cout << "Email: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
         std::getline(std::cin, email);
         cond = checkEmail(email);
     }
 
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
     std::cout << "Password: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
     std::getline(std::cin, pass1);
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
     std::cout << "Confirm Password: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
     std::getline(std::cin, pass2);
     cond = checkPass(pass1, pass2);
 
     while(!cond) {
-        rlutil::setColor(rlutil::RED);
+        setRed;
         std::cout << "Those passwords didn't match. Please try again!\n";
 
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
         std::cout << "Password: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
         std::getline(std::cin, pass1);
-        rlutil::setColor(rlutil::YELLOW);
+        setYellow;
         std::cout << "Confirm Password: ";
-        rlutil::setColor(rlutil::CYAN);
+        setCyan;
         std::getline(std::cin, pass2);
         cond = checkPass(pass1, pass2);
     }
@@ -271,7 +275,7 @@ void Interface::signupAdmin(const std::string& fileName) {
     out << temp;
     admins.push_back(std::move(temp));
 
-    rlutil::setColor(rlutil::YELLOW);
+    setYellow;
     std::cout << "Your account has been successfully created! Please wait...\n";
     std::this_thread::sleep_for(std::chrono::seconds (5));
 
@@ -283,8 +287,8 @@ void Interface::signupAdmin(const std::string& fileName) {
 
 /// Function that shows the login form.
 void Interface::login() {
-    rlutil::cls();
-    rlutil::setColor(rlutil::YELLOW);
+    clear;
+    setYellow;
 
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Login\n";
@@ -298,7 +302,7 @@ void Interface::login() {
     std::cout << "5. Quit\n\n";
 
     std::cout << "Please select your choice: ";
-    rlutil::setColor(rlutil::CYAN);
+    setCyan;
     std::cin >> option;
 
     switch(option) {
@@ -315,7 +319,7 @@ void Interface::login() {
             std::getline(std::cin, pass);
 
             if(loginUser(user, pass, userFile, temp)){
-              rlutil::setColor(rlutil::GREEN);
+              setGreen;
               std::cout << "Loading...\n";
 
               for(int i = 0 ; i < 9 ; i++) {
@@ -325,7 +329,7 @@ void Interface::login() {
               panel(temp);
             }
             else {
-                rlutil::setColor(rlutil::RED);
+                setRed;
                 std::cout << "Login unsuccessful. Please try again...\n";
                 std::this_thread::sleep_for(std::chrono::seconds(2));
                 login();
@@ -344,7 +348,7 @@ void Interface::login() {
             std::getline(std::cin, pass);
 
             if(loginAdmin(user, pass, adminFile, temp)){
-                rlutil::setColor(rlutil::GREEN);
+                setGreen;
                 std::cout << "Loading...\n";
 
                 for(int i = 0 ; i < 9 ; i++) {
@@ -355,7 +359,7 @@ void Interface::login() {
                 panel(temp);
             }
             else {
-                rlutil::setColor(rlutil::RED);
+                setRed;
                 std::cout << "Login unsuccessful. Please try again...\n";
                 std::this_thread::sleep_for(std::chrono::seconds(2));
                 login();
@@ -371,12 +375,12 @@ void Interface::login() {
             return;
         }
         case 5: {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             //waitkey; - comm pentru Github Action
             return;
         }
         default: {
-            rlutil::setColor(rlutil::RED);
+            setRed;
             std::cout << "Incorrect option!\n";
             login();
             return;
@@ -517,57 +521,67 @@ bool Interface::checkDuplicateEmail(const std::string& email) {
 // LOADING DATA METHODS
 
 /**
- * Function that loads users' authentication datas in app
+ * Function that loads users' authentication data in app
  *
  * @param[in] fileName std::string,
- * input file that stores the datas
+ * input file that stores the data
  *
- * @param[out] users std::vector<User>,
- * vector that stores all users' datas existing in fileName
+ * @param[out] users std::vector<std::unique_ptr<User>>,
+ * vector that stores all users' data existing in fileName
  */
 void Interface::loadUsersData(const std::string& fileName, std::vector<std::unique_ptr<User>>& users) {
-    std::ifstream fin(fileName);
-    std::string username, password, email;
+    try {
+        std::ifstream fin(fileName);
+        fin.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
+        std::string username, password, email;
 
-    while(!fin.eof()) {
-        fin >> username >> password >> email;
-        auto temp = std::make_unique<User>(username, password, email);
-        users.push_back(std::move(temp));
+        while(!fin.eof()) {
+            fin >> username >> password >> email;
+            auto temp = std::make_unique<User>(username, password, email);
+            users.push_back(std::move(temp));
+        }
+        fin.close();
     }
-    fin.close();
-
-    for(auto & user : users)
-        std::cout << user->getUsername() << " ";
+    catch (std::exception const& e) {
+        setRed;
+        std::cout << "There was an error: " << e.what() << "\n";
+    }
 }
 
 /**
- * Function that loads admins' authentication datas in app
+ * Function that loads admins' authentication data in app
  *
  * @param[in] fileName std::string,
- * input file that stores the datas
+ * input file that stores the data
  *
  * @param[out] admins std::vector<std::unique_ptr<Admin>>,
- * vector that stores all admins' datas existing in fileName
+ * vector that stores all admins' data existing in fileName
  */
 void Interface::loadAdminsData(const std::string& fileName, std::vector<std::unique_ptr<Admin>>& admins) {
-    std::ifstream fin(fileName);
+    try {
+        std::ifstream fin(fileName);
+        fin.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
+        std::string username, password, email;
 
-    std::string username, password, email;
+        while(!fin.eof()) {
+            fin >> username >> password >> email;
+            auto temp = std::make_unique<Admin>(username, password, email);
+            admins.push_back(std::move(temp));
+        }
 
-    while(!fin.eof()) {
-        fin >> username >> password >> email;
-        auto temp = std::make_unique<Admin>(username, password, email);
-        admins.push_back(std::move(temp));
+        fin.close();
     }
-
-    fin.close();
+    catch (std::exception const& e) {
+        setRed;
+        std::cout << "There was an error: " << e.what() << "\n";
+    }
 }
 
 // MAIN PANEL METHODS
 
 /// Function that shows the main panel for user
 void Interface::panel(User& user) {
-    rlutil::cls();
+    clear;
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Welcome, " << user.getUsername() <<"!\n";
     std::cout << "-------------------------------------------------\n\n";
@@ -576,7 +590,7 @@ void Interface::panel(User& user) {
 
 /// Function that shows the main panel for admin
 void Interface::panel(Admin& admin) {
-    rlutil::cls();
+    clear;
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Welcome, " << admin.getUsername() <<"!\n";
     std::cout << "-------------------------------------------------\n\n";
