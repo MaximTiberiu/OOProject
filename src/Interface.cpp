@@ -6,7 +6,12 @@
 #include <thread>
 #include <regex>
 
-#define waitkey rlutil::anykey("Press any key to continue...\n")
+#ifdef GH_ACTIONS
+    #define waitkey (void)
+#else
+    #define waitkey rlutil::anykey("Press any key to continue...\n")
+#endif
+
 #define setRed rlutil::setColor(rlutil::RED)
 #define setYellow rlutil::setColor(rlutil::YELLOW)
 #define setCyan rlutil::setColor(rlutil::CYAN)
@@ -376,7 +381,7 @@ void Interface::login() {
         }
         case 5: {
             setRed;
-            //waitkey; - comm pentru Github Action
+            waitkey;
             return;
         }
         default: {
