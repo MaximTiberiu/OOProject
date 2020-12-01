@@ -6,12 +6,14 @@
 #include <iostream>
 #include <chrono>
 #include <memory>
+#include <vector>
 
 class User : public Participant {
 private:
-    unsigned int postsNum{};
-    unsigned int likesNum{};
-    unsigned int commsNum{};
+
+    std::vector<unsigned int> posts;
+    std::vector<unsigned int> likes;
+    std::vector<unsigned int> comms;
 
     void fsetGrade();
 

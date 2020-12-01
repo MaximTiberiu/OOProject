@@ -2,7 +2,7 @@
 
 #include "Admin.h"
 #include "User.h"
-#include "Guest.h"
+#include "Channel.h"
 #include <fstream>
 #include <vector>
 #include <memory>
@@ -11,6 +11,7 @@ class Interface {
 private:
     std::vector<std::unique_ptr<Admin>> admins;
     std::vector<std::unique_ptr<User>> users;
+    std::vector<std::unique_ptr<Channel>> channels;
 
     unsigned short option;
 
@@ -42,7 +43,6 @@ private:
     // main panel method
     static void panel(User&);
     static void panel(Admin&);
-    static void panel(Guest&);
 
     // security methods
     static std::string encryptPass(const std::string&, const char*);

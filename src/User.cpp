@@ -25,13 +25,13 @@ std::ostream &operator<< (std::ostream &out, const std::unique_ptr<User>& user) 
 }
 
 void User::fsetGrade() {
-    if(postsNum <= 1) {
+    if(posts.size() <= 1) {
         grade = firstTimer;
         return;
     }
-    if(postsNum > 1) {
-        if(likesNum >= 20) {
-            if(commsNum >= 20)
+    if(posts.size() > 1) {
+        if(likes.size() >= 20) {
+            if(comms.size() >= 20)
                 grade = addict;
             else
                 grade = activist;
@@ -39,6 +39,6 @@ void User::fsetGrade() {
             grade = regularJoe;
         return;
     }
-    if(postsNum >= 100 && commsNum >= 100 && likesNum >= 100)
+    if(posts.size() >= 100 && comms.size() >= 100 && likes.size() >= 100)
         grade = master;
 }
