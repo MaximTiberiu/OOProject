@@ -18,7 +18,7 @@ jobs:
         sudo apt-get install -y valgrind cppcheck g++-9 gcovr
     - name: make
       run: g++ *.cpp src/*.cpp -Iinclude -o main -std=c++14 -Wall -Wextra -pedantic -Weffc++
-                --coverage -fprofile-arcs -ftest-coverage -g -O0 -lm -DGH_ACTIONS
+                --coverage -fprofile-arcs -ftest-coverage -g -O0 -lm -GH_ACTIONS
     - name: cppcheck
       run:
         cppcheck --enable=all .
