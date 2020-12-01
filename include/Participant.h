@@ -3,7 +3,8 @@
 // include
 #include <string>
 #include <vector>
-#include "./Post.h"
+#include <memory>
+#include "./Channel.h"
 
 enum Grade {
     firstTimer,
@@ -19,7 +20,7 @@ protected:
     std::string password;
     std::string email;
     Grade grade;
-    std::vector<Post> posts;
+    //std::vector<std::unique_ptr<Channel>> channels;
 
 public:
 
