@@ -1,20 +1,42 @@
 // include
 #include "../include/Participant.h"
 
-std::string Participant::getUsername() {
+Participant::Participant() = default;
+
+Participant::Participant(const std::string& username, const std::string& password, const std::string& email) {
+    this->username = username;
+    this->password = password;
+    this->email = email;
+    setUserDataFile();
+}
+
+Participant::Participant(const Participant& p) {
+    username = p.username;
+    email = p.email;
+    password = p.password;
+}
+
+Participant::~Participant() = default;
+
+
+std::string Participant::getUsername() const {
     return username;
 }
 
-std::string Participant::getPassword() {
+std::string Participant::getPassword() const {
     return password;
 }
 
-std::string Participant::getEmail() {
+std::string Participant::getEmail() const {
     return email;
 }
 
-Grade Participant::getGrade() {
+Grade Participant::getGrade() const {
     return grade;
+}
+
+std::string Participant::getUserDataFile() const {
+    return this->userDataFile;
 }
 
 void Participant::setUsername(const std::string& newUsername) {
@@ -31,4 +53,12 @@ void Participant::setEmail(const std::string& newEmail) {
 
 void Participant::setGrade(Grade& newGrade) {
     this->grade = newGrade;
+}
+
+void Participant::setUserDataFile() {
+    std::string path = "../appFiles/users-admins/";
+    path += username;
+    path += ".txt";
+
+    userDataFile = path;
 }

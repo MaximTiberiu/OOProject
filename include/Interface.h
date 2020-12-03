@@ -28,6 +28,7 @@ private:
     void login();
     bool loginUser(const std::string&, const std::string&, const std::string&, User& user);
     bool loginAdmin(const std::string&, const std::string&, const std::string&, Admin& admin);
+    //bool loginUser(const std::string&, const std::string&, const std::string&, Participant& user, const std::vector<std::unique_ptr<Participant>>&);
 
     // validation methods
     static bool checkPass(const std::string&, const std::string&);
