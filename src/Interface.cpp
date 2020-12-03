@@ -122,8 +122,8 @@ void Interface::signup() {
  * output file that stores users' data
  */
 void Interface::signupUser(const std::string& fileName) {
-    std::fstream out;
-    out.open(fileName, std::ios::app);
+    std::fstream outLogin;
+    outLogin.open(fileName, std::ios::app);
 
     std::string username, pass1, pass2, email;
     bool cond;
@@ -192,14 +192,18 @@ void Interface::signupUser(const std::string& fileName) {
     }
 
     auto temp = std::make_unique<User>(username, encryptPass(pass1, key), email);
-    out << temp;
+    outLogin << *temp;
+
+    std::fstream outFile;
+    outFile.open(temp->getUserDataFile(), std::ios::out);
+    outFile.close();
     users.push_back(std::move(temp));
 
     setYellow;
     std::cout << "Your account has been successfully created! Please wait...\n";
     std::this_thread::sleep_for(std::chrono::seconds (5));
 
-    out.close();
+    outLogin.close();
     startApp();
 }
 
@@ -210,45 +214,47 @@ void Interface::signupUser(const std::string& fileName) {
  * output file that stores admins' data
  */
 void Interface::signupAdmin(const std::string& fileName) {
-    std::fstream out;
-    out.open(fileName, std::ios::app);
+    std::fstream outLogin;
+    outLogin.open(fileName, std::ios::app);
 
     std::string username, pass1, pass2, email;
     bool cond;
-
-    setYellow;
-    std::cout << "Username: ";
-    setCyan;
     std::cin.ignore(100, '\n');
-    std::getline(std::cin, username);
-    cond = checkUsername(username);
 
+    cond = false;
     while(!cond) {
-        setRed;
-        std::cout << "White-spaces are not allowed in username! Please try again!\n";
-
         setYellow;
         std::cout << "Username: ";
         setCyan;
         std::getline(std::cin, username);
-        cond = checkUsername(username);
+
+        if(!checkUsername(username)) {
+            setRed;
+            std::cout << "White-spaces are not allowed in username! Please try again!\n";
+        }
+        else if(!checkDuplicateUsername(username)) {
+            setRed;
+            std::cout << "Username "<< username <<" is already taken! Please try again!\n";
+        }
+        else cond = true;
     }
 
-    setYellow;
-    std::cout << "Email: ";
-    setCyan;
-    std::getline(std::cin, email);
-    cond = checkEmail(email);
-
+    cond = false;
     while(!cond) {
-        setRed;
-        std::cout << "Invalid email address. Please try again!\n";
-
         setYellow;
         std::cout << "Email: ";
         setCyan;
         std::getline(std::cin, email);
-        cond = checkEmail(email);
+
+        if(!checkEmail(email)) {
+            setRed;
+            std::cout << "Invalid email address. Please try again!\n";
+        }
+        else if(!checkDuplicateEmail(email)) {
+            setRed;
+            std::cout << "Email " << email <<" is already taken. Please try again!\n";
+        }
+        else cond = true;
     }
 
     setYellow;
@@ -277,14 +283,14 @@ void Interface::signupAdmin(const std::string& fileName) {
     }
 
     auto temp = std::make_unique<Admin>(username, encryptPass(pass1, key), email);
-    out << temp;
+    outLogin << *temp;
     admins.push_back(std::move(temp));
 
     setYellow;
     std::cout << "Your account has been successfully created! Please wait...\n";
     std::this_thread::sleep_for(std::chrono::seconds (5));
 
-    out.close();
+    outLogin.close();
     startApp();
 }
 
@@ -413,7 +419,7 @@ void Interface::login() {
 bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, User& user) {
     for(auto &us : users)
         if((userOrEmail.compare(us->getUsername()) == 0 || userOrEmail.compare(us->getEmail()) == 0) && encryptPass(pass, key).compare(us->getPassword()) == 0){
-            user = us;
+            user = *us;
             return true;
         }
     return false;
@@ -440,11 +446,20 @@ bool Interface::loginUser(const std::string& userOrEmail, const std::string& pas
 bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, Admin& admin) {
     for(auto &ad : admins)
         if((userOrEmail.compare(ad->getUsername()) == 0 || userOrEmail.compare(ad->getEmail()) == 0) && encryptPass(pass, key).compare(ad->getPassword()) == 0){
-            admin = ad;
+            admin = *ad;
             return true;
         }
     return false;
 }
+
+/*bool Interface::loginUser(const std::string &userOrEmail, const std::string &pass, const std::string &fileName, Participant& participant, const std::vector<std::unique_ptr<Participant>>& participants) {
+    for(auto &part : participants)
+        if((userOrEmail.compare(part->getUsername()) == 0 || userOrEmail.compare(part->getEmail()) == 0) && encryptPass(pass, key).compare(part->getPassword()) == 0){
+            participant = *part;
+            return true;
+        }
+    return false;
+}*/
 
 // VALIDATION METHODS
 

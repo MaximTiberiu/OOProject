@@ -7,11 +7,10 @@
 
 class Admin : public Participant {
 private:
-
 public:
     Admin();
     Admin(const std::string&, const std::string&, const std::string&);
-    Admin(const std::unique_ptr<Admin>&);
+    Admin(const Admin&);
     ~Admin();
-    friend std::ostream& operator<< (std::ostream&, const std::unique_ptr<Admin>&);
+    friend std::ostream& operator<< (std::ostream&, const Admin&);
 };

@@ -20,15 +20,22 @@ protected:
     std::string password;
     std::string email;
     Grade grade;
+    std::string userDataFile;
     //std::vector<std::unique_ptr<Channel>> channels;
-
+    void setUserDataFile();
 public:
 
+    Participant();
+    Participant(const std::string&, const std::string&, const std::string&);
+    Participant(const Participant&);
+    ~Participant();
+
     // getters
-    std::string getUsername();
-    std::string getPassword();
-    std::string getEmail();
-    Grade getGrade();
+    std::string getUsername() const;
+    std::string getPassword() const;
+    std::string getEmail() const;
+    Grade getGrade() const;
+    std::string getUserDataFile() const;
 
     // setters
     void setUsername(const std::string&);
