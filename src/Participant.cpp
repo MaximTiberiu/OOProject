@@ -18,6 +18,10 @@ Participant::Participant(const Participant& p) {
 
 Participant::~Participant() = default;
 
+std::ostream &operator<< (std::ostream &out, const Participant& p) {
+    out << "TEST\n";
+    return out;
+}
 
 std::string Participant::getUsername() const {
     return username;
