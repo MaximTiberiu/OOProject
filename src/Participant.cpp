@@ -14,14 +14,11 @@ Participant::Participant(const Participant& p) {
     username = p.username;
     email = p.email;
     password = p.password;
+    userDataFile = p.userDataFile;
+    grade = p.grade;
 }
 
 Participant::~Participant() = default;
-
-std::ostream &operator<< (std::ostream &out, const Participant& p) {
-    out << "TEST\n";
-    return out;
-}
 
 std::string Participant::getUsername() const {
     return username;
@@ -40,7 +37,7 @@ Grade Participant::getGrade() const {
 }
 
 std::string Participant::getUserDataFile() const {
-    return this->userDataFile;
+    return userDataFile;
 }
 
 void Participant::setUsername(const std::string& newUsername) {

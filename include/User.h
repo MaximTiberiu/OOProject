@@ -10,17 +10,23 @@
 
 class User : public Participant {
 private:
+    std::vector<std::string> channels;
+    std::vector<std::string> posts;
+    std::vector<std::string> likes;
+    std::vector<std::string> dislikes;
+    std::vector<std::string> comms;
 
-    std::vector<unsigned int> posts;
-    std::vector<unsigned int> likes;
-    std::vector<unsigned int> comms;
-    std::string userDataFile;
     void setGrade();
+
+    void showUserOptions();
 
 public:
     User();
     User(const std::string&, const std::string&, const std::string&);
     User(const User&);
     ~User();
+
     std::unique_ptr<Participant> clone() override;
+    friend std::ostream &operator<< (std::ostream&, const User&);
+    void userPanel();
 };

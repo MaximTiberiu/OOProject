@@ -290,7 +290,7 @@ void Interface::signupAdmin(const std::string& fileName) {
 
     std::fstream outFile;
     outFile.open(temp->getUserDataFile(), std::ios::out);
-    outFile << *temp;
+    //outFile << *temp;
     outFile.close();
     admins.push_back(std::move(temp));
 
@@ -345,7 +345,7 @@ void Interface::login() {
                   std::cout << '-';
                   std::this_thread::sleep_for(std::chrono::milliseconds(30));
               }
-              panel(temp);
+              temp.userPanel();
             }
             else {
                 setRed;
