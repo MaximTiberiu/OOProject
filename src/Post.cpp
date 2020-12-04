@@ -13,14 +13,14 @@ Post::Post(const std::string& userID, const std::string& channelID) {
     setPostDataFile();
 }
 
-Post::Post(const Post& p) {
-    postID = p.postID;
-    userID = p.userID;
-    channelID = p.channelID;
-    likes = p.likes;
-    dislikes = p.dislikes;
-    comms = p.comms;
-    postDataFile = p.postDataFile;
+Post::Post(const std::unique_ptr<Post>& p) {
+    postID = p->postID;
+    userID = p->userID;
+    channelID = p->channelID;
+    likes = p->likes;
+    dislikes = p->dislikes;
+    //comms = p->comms;
+    postDataFile = p->postDataFile;
 }
 
 Post::~Post() = default;

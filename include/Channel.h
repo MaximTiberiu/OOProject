@@ -14,7 +14,7 @@ private:
 
     std::string user;
     std::string description;
-    std::vector<std::unique_ptr<Post>> posts;
+    //std::vector<std::unique_ptr<Post>> posts;
 
     void setChannnelID();
     void setChannelDataFile();

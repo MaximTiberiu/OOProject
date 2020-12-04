@@ -24,7 +24,7 @@ Channel::Channel(const Channel &ch) {
     name = ch.name;
     user = ch.user;
     description = ch.description;
-    posts = ch.posts;
+    //posts = ch.posts;
 }
 
 Channel::~Channel() = default;

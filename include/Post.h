@@ -11,7 +11,7 @@ private:
     std::string channelID;
     std::vector<std::string> likes;
     std::vector<std::string> dislikes;
-    std::vector<std::unique_ptr<Post>> comms;
+    //std::vector<std::unique_ptr<Post>> comms;
     std::string postDataFile;
 
     void setPostID();
