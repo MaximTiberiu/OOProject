@@ -3,14 +3,15 @@
 #include "Admin.h"
 #include "User.h"
 #include "Channel.h"
+#include "LoginWrapper.h"
 #include <fstream>
 #include <vector>
 #include <memory>
 
 class Interface {
 private:
-    std::vector<std::unique_ptr<Admin>> admins;
-    std::vector<std::unique_ptr<User>> users;
+    std::vector<std::unique_ptr<Participant>> admins;
+    std::vector<std::unique_ptr<Participant>> users;
     std::vector<std::unique_ptr<Channel>> channels;
 
     unsigned short option;
@@ -26,9 +27,7 @@ private:
 
     // login methods
     void login();
-    bool loginUser(const std::string&, const std::string&, const std::string&, User& user);
-    bool loginAdmin(const std::string&, const std::string&, const std::string&, Admin& admin);
-    //bool loginUser(const std::string&, const std::string&, const std::string&, Participant& user, const std::vector<std::unique_ptr<Participant>>&);
+    bool loginUser(const std::string&, const std::string&, Participant& user, const std::vector<std::unique_ptr<Participant>>&);
 
     // validation methods
     static bool checkPass(const std::string&, const std::string&);
@@ -38,8 +37,8 @@ private:
     bool checkDuplicateEmail(const std::string&);
 
     // loading data methods
-    static void loadUsersData(const std::string&, std::vector<std::unique_ptr<User>>&);
-    static void loadAdminsData(const std::string&, std::vector<std::unique_ptr<Admin>>&);
+    static void loadUsersData(const std::string&, std::vector<std::unique_ptr<Participant>>&);
+    static void loadAdminsData(const std::string&, std::vector<std::unique_ptr<Participant>>&);
 
     // main panel method
     static void panel(User&);

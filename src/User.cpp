@@ -15,11 +15,6 @@ User::User(const User& us)
 
 User::~User() = default;
 
-std::ostream &operator<< (std::ostream &out, const User& user) {
-    out << user.username << " " << user.password << " " << user.email << "\n";
-    return out;
-}
-
 void User::setGrade() {
     if(posts.size() <= 1) {
         grade = firstTimer;
@@ -37,4 +32,8 @@ void User::setGrade() {
     }
     if(posts.size() >= 100 && comms.size() >= 100 && likes.size() >= 100)
         grade = master;
+}
+
+std::unique_ptr<Participant> User::clone() {
+    return std::make_unique<User>(*this);
 }

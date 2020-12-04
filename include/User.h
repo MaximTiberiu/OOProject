@@ -22,7 +22,5 @@ public:
     User(const std::string&, const std::string&, const std::string&);
     User(const User&);
     ~User();
-
-    friend std::ostream &operator<< (std::ostream &, const User&);
-
+    std::unique_ptr<Participant> clone() override;
 };

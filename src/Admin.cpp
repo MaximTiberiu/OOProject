@@ -15,7 +15,6 @@ Admin::Admin(const Admin& ad)
 
 Admin::~Admin() = default;
 
-std::ostream& operator<<(std::ostream &out, const Admin& admin) {
-    out << admin.username << " " << admin.password << " " << admin.email << "\n";
-    return out;
+std::unique_ptr<Participant> Admin::clone() {
+    return std::make_unique<Admin>(*this);
 }

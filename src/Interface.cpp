@@ -22,7 +22,7 @@
 
 /// Function that opens the app.
 void Interface::startApp() {
-    // loading data
+    // loading login data
     loadUsersData(userFile, users);
     loadAdminsData(adminFile, admins);
 
@@ -192,10 +192,12 @@ void Interface::signupUser(const std::string& fileName) {
     }
 
     auto temp = std::make_unique<User>(username, encryptPass(pass1, key), email);
-    outLogin << *temp;
+    LoginWrapper l(*temp);
+    outLogin << l;
 
     std::fstream outFile;
     outFile.open(temp->getUserDataFile(), std::ios::out);
+    outFile << *temp;
     outFile.close();
     users.push_back(std::move(temp));
 
@@ -283,7 +285,13 @@ void Interface::signupAdmin(const std::string& fileName) {
     }
 
     auto temp = std::make_unique<Admin>(username, encryptPass(pass1, key), email);
-    outLogin << *temp;
+    LoginWrapper l(*temp);
+    outLogin << l;
+
+    std::fstream outFile;
+    outFile.open(temp->getUserDataFile(), std::ios::out);
+    outFile << *temp;
+    outFile.close();
     admins.push_back(std::move(temp));
 
     setYellow;
@@ -321,7 +329,7 @@ void Interface::login() {
             User temp;
             std::cout << temp.getUsername() << "\n";
             std::string user, pass;
-            std::cout << "Username: ";
+            std::cout << "Username/Email: ";
             std::cin.ignore(100, '\n');
 
             std::getline(std::cin, user);
@@ -329,7 +337,7 @@ void Interface::login() {
             std::cout << "Password: ";
             std::getline(std::cin, pass);
 
-            if(loginUser(user, pass, userFile, temp)){
+            if(loginUser(user, pass, temp, users)){
               setGreen;
               std::cout << "Loading...\n";
 
@@ -350,7 +358,7 @@ void Interface::login() {
         case 2: {
             Admin temp;
             std::string user, pass;
-            std::cout << "Username: ";
+            std::cout << "Username/Email: ";
             std::cin.ignore(100, '\n');
 
             std::getline(std::cin, user);
@@ -358,7 +366,7 @@ void Interface::login() {
             std::cout << "Password: ";
             std::getline(std::cin, pass);
 
-            if(loginAdmin(user, pass, adminFile, temp)){
+            if(loginUser(user, pass, temp, admins)){
                 setGreen;
                 std::cout << "Loading...\n";
 
@@ -400,34 +408,7 @@ void Interface::login() {
 }
 
 /**
- * Function that validates an user by its username/email and password
- *
- * @param[in] userOrEmail std::string,
- * field that contains user's username or email
- *
- * @param[in] pass std::string,
- * filed that contains user's password
- *
- * @param[in] fileName std::string,
- * input file that stores all users' authetication data
- *
- * @param[out] user User,
- * object that stores all data about it in case of validation
- *
- * @return true, if the authentication was succesdful, else false
- */
-bool Interface::loginUser(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, User& user) {
-    for(auto &us : users)
-        if((userOrEmail.compare(us->getUsername()) == 0 || userOrEmail.compare(us->getEmail()) == 0) && encryptPass(pass, key).compare(us->getPassword()) == 0){
-            user = *us;
-            return true;
-        }
-    return false;
-}
-
-
-/**
- * Function that validates an admin by its username/email and password
+ * Function that validates a participant by its username/email and password
  *
  * @param[in] userOrEmail std::string,
  * field that contains admin's username or email
@@ -435,31 +416,23 @@ bool Interface::loginUser(const std::string& userOrEmail, const std::string& pas
  * @param[in] pass std::string,
  * filed that contains admin's password
  *
- * @param[in] fileName std::string,
- * input file that stores all admins' authetication data
- *
- * @param[out] admin Admin,
+ * @param[out] participant Participant,
  * object that stores all data about it in case of validation
+ *
+ * @param[in] participants std::vector<std::unique_ptr<Participant>>
+ * vector that stores all users/admins data
  *
  * @return true, if the authentication was succesdful, else false
  */
-bool Interface::loginAdmin(const std::string& userOrEmail, const std::string& pass, const std::string& fileName, Admin& admin) {
-    for(auto &ad : admins)
-        if((userOrEmail.compare(ad->getUsername()) == 0 || userOrEmail.compare(ad->getEmail()) == 0) && encryptPass(pass, key).compare(ad->getPassword()) == 0){
-            admin = *ad;
-            return true;
-        }
-    return false;
-}
-
-/*bool Interface::loginUser(const std::string &userOrEmail, const std::string &pass, const std::string &fileName, Participant& participant, const std::vector<std::unique_ptr<Participant>>& participants) {
-    for(auto &part : participants)
-        if((userOrEmail.compare(part->getUsername()) == 0 || userOrEmail.compare(part->getEmail()) == 0) && encryptPass(pass, key).compare(part->getPassword()) == 0){
+bool Interface::loginUser(const std::string &userOrEmail, const std::string &pass, Participant& participant, const std::vector<std::unique_ptr<Participant>>& participants) {
+    for(auto &part : participants) {
+        if ((userOrEmail.compare(part->getUsername()) == 0 || userOrEmail.compare(part->getEmail()) == 0) && encryptPass(pass, key).compare(part->getPassword()) == 0) {
             participant = *part;
             return true;
         }
+    }
     return false;
-}*/
+}
 
 // VALIDATION METHODS
 
@@ -549,7 +522,7 @@ bool Interface::checkDuplicateEmail(const std::string& email) {
  * @param[out] users std::vector<std::unique_ptr<User>>,
  * vector that stores all users' data existing in fileName
  */
-void Interface::loadUsersData(const std::string& fileName, std::vector<std::unique_ptr<User>>& users) {
+void Interface::loadUsersData(const std::string& fileName, std::vector<std::unique_ptr<Participant>>& users) {
     try {
         std::ifstream fin(fileName);
         fin.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
@@ -577,7 +550,7 @@ void Interface::loadUsersData(const std::string& fileName, std::vector<std::uniq
  * @param[out] admins std::vector<std::unique_ptr<Admin>>,
  * vector that stores all admins' data existing in fileName
  */
-void Interface::loadAdminsData(const std::string& fileName, std::vector<std::unique_ptr<Admin>>& admins) {
+void Interface::loadAdminsData(const std::string& fileName, std::vector<std::unique_ptr<Participant>>& admins) {
     try {
         std::ifstream fin(fileName);
         fin.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
@@ -596,6 +569,7 @@ void Interface::loadAdminsData(const std::string& fileName, std::vector<std::uni
         std::cout << "There was an error: " << e.what() << "\n";
     }
 }
+
 
 // MAIN PANEL METHODS
 
