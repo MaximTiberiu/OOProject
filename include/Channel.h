@@ -8,11 +8,23 @@
 
 class Channel {
 private:
-    unsigned int channelID;
+    std::string channelID;
+    std::string channelDataFile;
     std::string name;
+
+    std::string user;
     std::string description;
     std::vector<std::unique_ptr<Post>> posts;
-public:
 
+    void setChannnelID();
+    void setChannelDataFile();
+    void createChannelDirectory();
+public:
+    Channel();
+    Channel(const std::string&, const std::string&, const std::string&);
+    Channel(const Channel&);
+    ~Channel();
+
+    friend std::ostream &operator<< (std::ostream&, const Channel&);
 };
 
