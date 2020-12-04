@@ -14,4 +14,5 @@ public:
     Admin(const Admin&);
     ~Admin();
     std::unique_ptr<Participant> clone() override;
+
 };

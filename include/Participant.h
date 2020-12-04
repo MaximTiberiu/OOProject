@@ -31,7 +31,6 @@ public:
     Participant(const std::string&, const std::string&, const std::string&);
     Participant(const Participant&);
     virtual ~Participant();
-    friend std::ostream &operator<< (std::ostream &, const Participant&);
 
     // getters
     std::string getUsername() const;
