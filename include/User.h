@@ -18,7 +18,8 @@ private:
 
     void setGrade();
 
-    void showUserOptions();
+    static void showUserOptions();
+    void createChannel();
 
 public:
     User();

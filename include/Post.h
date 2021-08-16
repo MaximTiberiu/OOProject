@@ -20,7 +20,8 @@ private:
 public:
     Post();
     Post(const std::string&, const std::string&);
-    Post(const Post&);
+//    Post(const Post&);
+    Post(const std::unique_ptr<Post>&);
     ~Post();
 
     // getters

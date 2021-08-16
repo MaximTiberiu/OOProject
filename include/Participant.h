@@ -21,7 +21,7 @@ protected:
     std::string email;
     Grade grade;
     std::string userDataFile;
-    //std::vector<std::unique_ptr<Channel>> channels;
+    std::vector<Channel*> channels;
 
     void setUserDataFile();
 
@@ -29,6 +29,7 @@ public:
 
     Participant();
     Participant(const std::string&, const std::string&, const std::string&);
+    Participant(const std::string&, const std::string&, const std::string&, const std::vector<Channel*>&);
     Participant(const Participant&);
     virtual ~Participant();
 
@@ -44,6 +45,8 @@ public:
     void setPassword(const std::string&);
     void setEmail(const std::string&);
     void setGrade(Grade&);
+    void setChannel(const std::vector<Channel*>&);
+    void getChannels();
 
     virtual std::unique_ptr<Participant> clone() = 0;
 };

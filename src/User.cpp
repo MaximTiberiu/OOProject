@@ -86,7 +86,7 @@ void User::userPanel() {
     std::cout << "                    Welcome, " << getUsername() <<"!\n";
     setGreen;
     std::cout << "-------------------------------------------------\n\n";
-
+    std::cout << this->channels.size() << "\n";
     showUserOptions();
     std::cout << "Please select your choice: ";
     setCyan;

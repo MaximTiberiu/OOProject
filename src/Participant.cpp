@@ -1,5 +1,6 @@
 // include
 #include "../include/Participant.h"
+#include <algorithm>
 
 Participant::Participant() = default;
 
@@ -10,12 +11,21 @@ Participant::Participant(const std::string& username, const std::string& passwor
     setUserDataFile();
 }
 
+Participant::Participant(const std::string& username, const std::string& password, const std::string& email, const std::vector<Channel*>& ch) {
+    this->username = username;
+    this->password = password;
+    this->email = email;
+    this->channels = ch;
+    setUserDataFile();
+}
+
 Participant::Participant(const Participant& p) {
     username = p.username;
     email = p.email;
     password = p.password;
     userDataFile = p.userDataFile;
     grade = p.grade;
+    channels = p.channels;
 }
 
 Participant::~Participant() = default;
@@ -56,10 +66,20 @@ void Participant::setGrade(Grade& newGrade) {
     this->grade = newGrade;
 }
 
+void Participant::setChannel(const std::vector<Channel*>& ch) {
+    std::copy(ch.begin(), ch.end(), std::back_inserter(channels));
+}
+
 void Participant::setUserDataFile() {
     std::string path = "../appFiles/users-admins/";
     path += username;
     path += ".txt";
 
     userDataFile = path;
+}
+
+void Participant::getChannels() {
+    for(auto & channel : channels)
+        std::cout << channel->getName() << " ";
+    std::cout << "\n";
 }

@@ -10,13 +10,10 @@
 
 Channel::Channel() = default;
 
-Channel::Channel(const std::string& name, const std::string& user, const std::string& description) {
+Channel::Channel(const std::string& id, const std::string& name, const std::string& user, const std::string& description) {
     this->name = name;
     this->user = user;
-    this->description =  description;
-    setChannnelID();
-    createChannelDirectory();
-    setChannelDataFile();
+    this->description = description;
 }
 
 Channel::Channel(const Channel &ch) {
@@ -24,6 +21,7 @@ Channel::Channel(const Channel &ch) {
     name = ch.name;
     user = ch.user;
     description = ch.description;
+    channelDataFile = ch.channelDataFile;
     //posts = ch.posts;
 }
 
@@ -46,7 +44,7 @@ void Channel::setChannnelID() {
 }
 
 void Channel::setChannelDataFile() {
-    std::string path = "./channels/";
+    std::string path = "../appFiles/channels/";
     path += channelID;
     path += "/";
     path += channelID;
@@ -55,9 +53,9 @@ void Channel::setChannelDataFile() {
 }
 
 void Channel::createChannelDirectory() {
-    std::string path = "./channels/";
+    std::string path = "../appFiles/channels/";
     path += channelID;
-
+    std::cout << path << "\n";
     if(mkdir(path.c_str())) {
         setRed;
         throw std::runtime_error("Could not create directory");
@@ -65,7 +63,21 @@ void Channel::createChannelDirectory() {
 }
 
 std::ostream &operator<< (std::ostream& out, const Channel& ch) {
-    out << ch.posts.size() << "\n";
-    for(const auto & post : ch.posts)
-        out << post->getPostID() << " ";
+    out << ch.name << " " << ch.user << " " << ch.description << "\n";
+//    out << ch.posts.size() << "\n";
+//    for(const auto & post : ch.posts)
+//        out << post->getPostID() << " ";
+    return out;
+}
+
+std::string Channel::getName() {
+    return name;
+}
+
+std::string Channel::getUser() {
+    return user;
+}
+
+std::string Channel::getDescription() {
+    return description;
 }

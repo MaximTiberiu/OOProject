@@ -25,13 +25,13 @@ void Interface::startApp() {
     // loading login data
     loadUsersData(userFile, users);
     loadAdminsData(adminFile, admins);
+    loadChannelsData(channelFile, channels);
 
-    clear;
+    //clear;
     setYellow;
     std::cout << "-------------------------------------------------\n";
     std::cout << "                    Reddit++\n";
     std::cout << "-------------------------------------------------\n\n";
-
     std::cout << "Please select an option from the menu below: \n";
     std::cout << "1. Login\n";
     std::cout << "2. Create a New Account\n";
@@ -290,7 +290,6 @@ void Interface::signupAdmin(const std::string& fileName) {
 
     std::fstream outFile;
     outFile.open(temp->getUserDataFile(), std::ios::out);
-    //outFile << *temp;
     outFile.close();
     admins.push_back(std::move(temp));
 
@@ -338,14 +337,14 @@ void Interface::login() {
             std::getline(std::cin, pass);
 
             if(loginUser(user, pass, temp, users)){
-              setGreen;
-              std::cout << "Loading...\n";
-
-              for(int i = 0 ; i < 9 ; i++) {
-                  std::cout << '-';
-                  std::this_thread::sleep_for(std::chrono::milliseconds(30));
-              }
-              temp.userPanel();
+                setGreen;
+                std::cout << "Loading...\n";
+                for(int i = 0 ; i < 9 ; i++) {
+                    std::cout << '-';
+                    std::this_thread::sleep_for(std::chrono::milliseconds(30));
+                }
+                temp.setChannel(channels);
+                temp.userPanel();
             }
             else {
                 setRed;
@@ -570,6 +569,35 @@ void Interface::loadAdminsData(const std::string& fileName, std::vector<std::uni
     }
 }
 
+/**
+ * Function that loads channels' data in app
+ *
+ * @param[in] fileName std::string,
+ * input file that stores the data
+ *
+ * @param[out] ch std::vector<std::unique_ptr<Channel>>,
+ * vector that stores all channels' basic data existing in fileName
+ */
+void Interface::loadChannelsData(const std::string& fileName, std::vector<Channel*>& ch) {
+    try {
+        std::ifstream fin(fileName);
+        fin.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
+        std::string id, name, user, description;
+
+        while(!fin.eof()) {
+            fin >> id >> name >> user;
+            getline(fin, description);
+            auto *temp = new Channel(id, name, user, description);
+            ch.push_back(temp);
+        }
+
+        fin.close();
+    }
+    catch (std::exception const& e) {
+        setRed;
+        std::cout << "There was an error: " << e.what() << "\n";
+    }
+}
 
 // MAIN PANEL METHODS
 
@@ -610,4 +638,13 @@ std::string Interface::encryptPass(const std::string& password, const char* key)
         encryptedPass = password[i] ^ key[i % (sizeof(key) / sizeof(char))];
     }
     return encryptedPass;
+}
+
+Interface* Interface::instance = nullptr;
+
+Interface *Interface::getInstance() {
+    if(instance == nullptr) {
+        instance = new Interface();
+    }
+    return instance;
 }

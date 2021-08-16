@@ -8,17 +8,21 @@
 #include <vector>
 #include <memory>
 
-class Interface {
+class Interface { // Singleton
 private:
+    static Interface* instance;
+    Interface() = default;
+
     std::vector<std::unique_ptr<Participant>> admins;
     std::vector<std::unique_ptr<Participant>> users;
-    std::vector<std::unique_ptr<Channel>> channels;
+    std::vector<Channel*> channels;
 
     unsigned short option;
 
     const char* key = "password";
     const std::string adminFile = "../appFiles/adminsLogin.txt";
     const std::string userFile = "../appFiles/usersLogin.txt";
+    const std::string channelFile = "../appFiles/channels.txt";
 
     // signup methods
     void signup();
@@ -39,6 +43,7 @@ private:
     // loading data methods
     static void loadUsersData(const std::string&, std::vector<std::unique_ptr<Participant>>&);
     static void loadAdminsData(const std::string&, std::vector<std::unique_ptr<Participant>>&);
+    static void loadChannelsData(const std::string&, std::vector<Channel*>&);
 
     // main panel method
     static void panel(User&);
@@ -48,5 +53,8 @@ private:
     static std::string encryptPass(const std::string&, const char*);
 
 public:
+    static Interface* getInstance();
+    ~Interface() = default;
+
     void startApp();
 };
